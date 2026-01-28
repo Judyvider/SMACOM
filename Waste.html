@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waste-to-Wealth | Circular Economy Platform</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        // Earthy Brown Palette
+                        stone: {
+                            50: '#fafaf9',  // Main Background
+                            100: '#f5f5f4', // Panel Backgrounds
+                            200: '#e7e5e4', // Borders
+                            600: '#57534e', // Secondary Text
+                            800: '#292524', // Primary Text
+                            900: '#1c1917', // Darkest
+                        },
+                        // Forest Green Palette
+                        green: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a', // Primary Buttons
+                            700: '#15803d', // Dark Green Text
+                            800: '#166534', // Darker Accents
+                            900: '#14532d', // Deep Forest
+                        },
+                        // Accent Brown
+                        brown: {
+                            500: '#a16207',
+                            600: '#854d0e', // Primary Brown
+                            800: '#57330e', // Dark Brown
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #fafaf9; /* Stone-50 */
+            color: #1c1917; /* Stone-900 */
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fafaf9; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d6d3d1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a29e; 
+        }
+        /* Typewriter Cursor */
+        .cursor::after {
+            content: '|';
+            animation: blink 1s step-start infinite;
+            color: #15803d; /* Green-700 */
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+        .glass-panel {
+            background: #ffffff;
+            border: 1px solid #e7e5e4; /* Stone-200 */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+        .square-card {
+            border-radius: 0px !important;
+        }
+        .nav-tab-active {
+            border-bottom: 3px solid #15803d; /* Green-700 */
+            color: #15803d;
+            background-color: #f0fdf4;
+        }
+        .nav-tab-inactive {
+            border-bottom: 3px solid transparent;
+            color: #57534e; /* Stone-600 */
+        }
+        .nav-tab-inactive:hover {
+            color: #1c1917;
+            border-bottom: 3px solid #d6d3d1;
+        }
+        /* Input Number Arrows Removal */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col relative overflow-x-hidden">
+
+    <!-- Navigation / Role Switcher -->
+    <nav class="fixed top-0 w-full z-50 bg-white border-b border-stone-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="router.navigate('landing')">
+                    <i class="fa-solid fa-recycle text-3xl text-green-700 mr-2"></i>
+                    <span class="font-display text-xl font-bold tracking-wider text-stone-900">W2W <span class="text-green-700">SYSTEM</span></span>
+                </div>
+                
+                <!-- Desktop Role Buttons -->
+                <div class="hidden md:flex space-x-2">
+                    <button onclick="router.navigate('admin')" class="nav-btn px-4 py-2 square-card text-sm font-bold transition-all duration-200 hover:bg-green-700 hover:text-white border border-transparent hover:border-green-800 text-stone-600" data-role="admin">
+                        <i class="fa-solid fa-chart-line mr-2"></i>Admin
+                    </button>
+                    <button onclick="router.navigate('producer')" class="nav-btn px-4 py-2 square-card text-sm font-bold transition-all duration-200 hover:bg-green-700 hover:text-white border border-transparent hover:border-green-800 text-stone-600" data-role="producer">
+                        <i class="fa-solid fa-dumpster mr-2"></i>Producer
+                    </button>
+                    <button onclick="router.navigate('processor')" class="nav-btn px-4 py-2 square-card text-sm font-bold transition-all duration-200 hover:bg-green-700 hover:text-white border border-transparent hover:border-green-800 text-stone-600" data-role="processor">
+                        <i class="fa-solid fa-industry mr-2"></i>Processor
+                    </button>
+                    <button onclick="router.navigate('farmer')" class="nav-btn px-4 py-2 square-card text-sm font-bold transition-all duration-200 hover:bg-green-700 hover:text-white border border-transparent hover:border-green-800 text-stone-600" data-role="farmer">
+                        <i class="fa-solid fa-wheat-awn mr-2"></i>Farmer
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-stone-600 hover:text-green-700 focus:outline-none">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-stone-200 absolute w-full shadow-lg">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a onclick="router.navigate('admin'); toggleMobileMenu()" class="block px-3 py-2 text-base font-bold text-stone-600 hover:text-white hover:bg-green-700 cursor-pointer">Admin Dashboard</a>
+                <a onclick="router.navigate('producer'); toggleMobileMenu()" class="block px-3 py-2 text-base font-bold text-stone-600 hover:text-white hover:bg-green-700 cursor-pointer">Producer Dashboard</a>
+                <a onclick="router.navigate('processor'); toggleMobileMenu()" class="block px-3 py-2 text-base font-bold text-stone-600 hover:text-white hover:bg-green-700 cursor-pointer">Processor Dashboard</a>
+                <a onclick="router.navigate('farmer'); toggleMobileMenu()" class="block px-3 py-2 text-base font-bold text-stone-600 hover:text-white hover:bg-green-700 cursor-pointer">Farmer Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main id="app-root" class="flex-grow pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full mb-12">
+        <!-- Content injected via JS -->
+    </main>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+    <!-- Scripts -->
+    <script>
+        // --- DATA & STATE MANAGEMENT ---
+        const state = {
+            currentView: 'landing',
+            subViews: {
+                admin: 'metrics',
+                producer: 'log',
+                processor: 'inventory',
+                farmer: 'market'
+            },
+            cart: [],
+            deliveryFee: 0,
+            deliveryType: 'pickup',
+            counties: [
+                "Mombasa", "Kwale", "Kilifi", "Tana River", "Lamu", "Taita-Taveta", "Garissa", "Wajir", "Mandera", "Marsabit", 
+                "Isiolo", "Meru", "Tharaka-Nithi", "Embu", "Kitui", "Machakos", "Makueni", "Nyandarua", "Nyeri", "Kirinyaga", 
+                "Murang'a", "Kiambu", "Turkana", "West Pokot", "Samburu", "Trans Nzoia", "Uasin Gishu", "Elgeyo-Marakwet", 
+                "Nandi", "Baringo", "Laikipia", "Nakuru", "Narok", "Kajiado", "Kericho", "Bomet", "Kakamega", "Vihiga", 
+                "Bungoma", "Busia", "Siaya", "Kisumu", "Homa Bay", "Migori", "Kisii", "Nyamira", "Nairobi"
+            ],
+            stats: {
+                totalWaste: 12500,
+                fertilizerProduced: 4500,
+                feedSales: 2500,
+                co2Saved: 8500
+            },
+            producer: {
+                credits: 1250,
+                history: [
+                    { id: 1, date: '2023-10-24', type: 'Food Waste', location: 'Nairobi', amount: 50, credits: 25 },
+                    { id: 2, date: '2023-10-25', type: 'Garden Waste', location: 'Kiambu', amount: 100, credits: 30 }
+                ],
+                analysisLogs: [
+                    { batch: "#QA-2991", date: "Oct 25, 2023", moisture: "62%", contam: "0.4%", grade: "A+", notes: "Excellent quality, high organic content." },
+                    { batch: "#QA-2988", date: "Oct 22, 2023", moisture: "58%", contam: "1.2%", grade: "B", notes: "Slight plastic traces found in pre-sort." },
+                    { batch: "#QA-2982", date: "Oct 18, 2023", moisture: "45%", contam: "0.1%", grade: "B-", notes: "Material too dry, required hydration." },
+                    { batch: "#QA-2975", date: "Oct 15, 2023", moisture: "60%", contam: "5.0%", grade: "D", notes: "High metal content. Rejected." },
+                    { batch: "#QA-2970", date: "Oct 12, 2023", moisture: "65%", contam: "0.3%", grade: "A", notes: "Good balance, ideal for compost." }
+                ]
+            },
+            farmer: {
+                impact: 320,
+                orders: [
+                    { id: "TRK-9021", name: "Premium Organic Compost", qty: 2, status: "Delivered", date: "Oct 10, 2023" }
+                ]
+            },
+            processor: {
+                inventoryList: [
+                    { id: 'C-101', type: 'Compost', batch: 'B-299', qty: 500, unit: 'kg', status: 'Ready' },
+                    { id: 'C-102', type: 'Compost', batch: 'B-300', qty: 300, unit: 'kg', status: 'Curing' },
+                    { id: 'C-103', type: 'Compost', batch: 'B-301', qty: 700, unit: 'kg', status: 'Ready' },
+                    { id: 'F-201', type: 'Feed', batch: 'F-055', qty: 200, unit: 'kg', status: 'Ready' },
+                    { id: 'F-202', type: 'Feed', batch: 'F-056', qty: 600, unit: 'kg', status: 'Packaging' },
+                ],
+                intakeLog: [],
+                units: [
+                    { id: 1, name: 'Digester A (Bio-Gas)', progress: 75, daysLeft: 5, color: '#16a34a' }, 
+                    { id: 2, name: 'Composter B (Aerobic)', progress: 45, daysLeft: 12, color: '#854d0e' },
+                    { id: 3, name: 'Digester C (Sludge)', progress: 90, daysLeft: 1, color: '#ca8a04' } 
+                ]
+            },
+            market: [
+                { id: 1, name: 'Premium Organic Compost', price: 15, unit: '50kg Bag', stock: 100, icon: 'fa-seedling', color: 'bg-green-100', iconColor: 'text-green-700' },
+                { id: 2, name: 'Nutri-Rich Liquid Fertilizer', price: 25, unit: '10L Drum', stock: 50, icon: 'fa-flask', color: 'bg-blue-100', iconColor: 'text-blue-700' },
+                { id: 3, name: 'Balanced Animal Feed', price: 40, unit: '25kg Bag', stock: 80, icon: 'fa-cow', color: 'bg-yellow-100', iconColor: 'text-yellow-700' },
+                { id: 4, name: 'Bio-Char Soil Amendment', price: 30, unit: '10kg Bag', stock: 25, icon: 'fa-fire-burner', color: 'bg-stone-200', iconColor: 'text-stone-700' }
+            ]
+        };
+
+        // --- CORE FUNCTIONS ---
+
+        const router = {
+            navigate: (view) => {
+                state.currentView = view;
+                render();
+                window.scrollTo(0,0);
+                
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    if(btn.dataset.role === view) {
+                        btn.classList.add('bg-green-700', 'text-white');
+                        btn.classList.remove('text-stone-600');
+                    } else {
+                        btn.classList.remove('bg-green-700', 'text-white');
+                        btn.classList.add('text-stone-600');
+                    }
+                });
+            },
+            setSubView: (role, subView) => {
+                state.subViews[role] = subView;
+                render();
+            }
+        };
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const colors = type === 'success' ? 'border-green-600 text-green-800 bg-white' : 'border-red-500 text-red-800 bg-white';
+            const icon = type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+            
+            toast.className = `px-6 py-4 square-card shadow-xl border-l-4 ${colors} transform transition-all duration-300 translate-y-10 opacity-0 flex items-center min-w-[300px]`;
+            toast.innerHTML = `
+                <i class="fa-solid ${icon} text-xl mr-3"></i>
+                <div>
+                    <h4 class="font-bold text-sm uppercase tracking-wide">${type}</h4>
+                    <p class="text-stone-600 text-sm">${message}</p>
+                </div>
+            `;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.remove('translate-y-10', 'opacity-0'));
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function formatNum(num) {
+            return new Intl.NumberFormat().format(num);
+        }
+
+        // --- BUSINESS LOGIC HANDLERS ---
+        function handleWasteSubmit(e) {
+            e.preventDefault();
+            const type = document.getElementById('wasteType').value;
+            const amount = parseFloat(document.getElementById('wasteAmount').value);
+            const location = document.getElementById('wasteLocation').value;
+            
+            if(!amount || amount <= 0) return showToast('Please select a valid amount', 'error');
+            if(!location) return showToast('Please select a location', 'error');
+
+            const earnedCredits = Math.floor(amount * 0.5);
+            state.producer.credits += earnedCredits;
+            state.stats.totalWaste += amount;
+            state.stats.co2Saved += (amount * 0.8);
+            
+            state.producer.history.unshift({
+                id: Date.now(),
+                date: new Date().toISOString().split('T')[0],
+                type: type,
+                location: location,
+                amount: amount,
+                credits: earnedCredits
+            });
+
+            showToast(`Submitted ${amount}kg. Earned ${earnedCredits} credits!`);
+            render();
+        }
+
+        function addToCart(productId) {
+            const product = state.market.find(p => p.id === productId);
+            const qtyInput = document.getElementById(`qty-${productId}`);
+            const qty = parseInt(qtyInput.value) || 1;
+
+            if (qty > product.stock) return showToast('Not enough stock available', 'error');
+
+            const existing = state.cart.find(item => item.id === productId);
+            if (existing) {
+                if (existing.qty + qty > product.stock) return showToast('Stock limit reached', 'error');
+                existing.qty += qty;
+            } else {
+                state.cart.push({ ...product, qty: qty });
+            }
+            
+            product.stock -= qty; 
+            showToast(`Added ${qty} x ${product.name} to cart`);
+            render();
+        }
+
+        function updateDeliveryFee() {
+            const type = document.querySelector('input[name="deliveryType"]:checked').value;
+            state.deliveryType = type;
+            state.deliveryFee = (type === 'door') ? 500 : 0;
+            render();
+        }
+
+        function checkout(e) {
+            if(e) e.preventDefault();
+            if (state.cart.length === 0) return showToast('Cart is empty', 'error');
+            
+            // Get form details
+            const name = document.getElementById('checkoutName').value;
+            const location = document.getElementById('checkoutLocation').value;
+            
+            if(!name || (state.deliveryType === 'door' && !location)) {
+                return showToast('Please fill in all delivery details', 'error');
+            }
+
+            const trackingId = "TRK-" + Math.floor(1000 + Math.random() * 9000);
+
+            state.cart.forEach(item => {
+                state.farmer.orders.unshift({
+                    id: trackingId,
+                    name: item.name,
+                    qty: item.qty,
+                    total: item.price * item.qty,
+                    date: new Date().toLocaleDateString(),
+                    status: 'Processing',
+                    trackingLocation: 'Warehouse'
+                });
+                state.stats.feedSales += (item.price * item.qty);
+            });
+            
+            state.cart = [];
+            showToast(`Order Placed! Tracking ID: ${trackingId}`);
+            router.setSubView('farmer', 'orders');
+        }
+
+        function handleIntakeLog(e) {
+            e.preventDefault();
+            const source = document.getElementById('intakeSource').value;
+            const weight = document.getElementById('intakeWeight').value;
+
+            state.processor.intakeLog.unshift({
+                time: new Date().toLocaleTimeString(),
+                source: source,
+                weight: weight,
+                status: 'Logged'
+            });
+
+            state.stats.totalWaste += parseFloat(weight);
+            showToast(`Logged intake of ${weight}kg`);
+            render();
+        }
+
+        function updateProductStock(id) {
+            const newStock = parseInt(document.getElementById(`stock-edit-${id}`).value);
+            const product = state.market.find(p => p.id === id);
+            if(product && newStock >= 0) {
+                product.stock = newStock;
+                showToast(`Stock updated for ${product.name}`);
+                render();
+            }
+        }
+
+        function trackOrder(e) {
+            e.preventDefault();
+            const id = document.getElementById('trackInput').value;
+            const order = state.farmer.orders.find(o => o.id === id);
+            if(order) {
+                showToast(`Order ${id}: ${order.status} at ${order.trackingLocation || 'Warehouse'}`);
+            } else {
+                showToast('Tracking ID not found', 'error');
+            }
+        }
+
+        function approveOrder(idx) {
+            showToast('Order Approved & Dispatched');
+            const btn = document.getElementById(`btn-approve-${idx}`);
+            if(btn) {
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Sent';
+                btn.className = "text-green-600 text-xs font-bold";
+            }
+        }
+
+        function generateGauge(percentage, color, id) {
+            const totalLen = 126;
+            const strokeLen = (percentage / 100) * totalLen;
+            return `
+                <svg viewBox="0 0 100 60" class="w-full h-auto">
+                    <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#e7e5e4" stroke-width="8" stroke-linecap="round" />
+                    <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${strokeLen} 1000" />
+                    <text x="50" y="45" text-anchor="middle" font-size="12" font-weight="bold" fill="#292524">${percentage}%</text>
+                </svg>
+            `;
+        }
+
+        // --- VIEWS ---
+
+        function renderLanding() {
+            return `
+                <div class="flex flex-col items-center justify-center min-h-[80vh] text-center space-y-8">
+                    <div class="space-y-4 max-w-3xl">
+                        <div class="inline-block p-2 px-4 square-card bg-white border border-green-200 shadow-sm mb-4">
+                            <span class="text-green-700 text-xs font-bold tracking-widest uppercase">Circular Economy V1.0</span>
+                        </div>
+                        <h1 class="text-5xl md:text-7xl font-display font-bold text-stone-900 leading-tight">
+                            <span id="typewriter" class="text-green-700 cursor"></span>
+                        </h1>
+                        <p class="text-stone-600 text-lg md:text-xl max-w-2xl mx-auto pt-4 leading-relaxed">
+                            A decentralized platform connecting producers, farmers, and processors to transform organic waste into valuable resources.
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col gap-4 w-full max-w-lg mt-12">
+                        <div class="glass-panel p-6 square-card border-l-4 border-brown-600 hover:bg-stone-50 transition duration-300 group cursor-pointer flex items-center space-x-6" onclick="router.navigate('admin')">
+                            <div class="h-12 w-12 square-card bg-brown-600 text-white flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-chart-pie text-xl"></i>
+                            </div>
+                            <div class="text-left">
+                                <h3 class="text-stone-900 font-bold text-lg">Admin Dashboard</h3>
+                                <p class="text-sm text-stone-500">Oversee ecosystem, IoT sensors & global metrics.</p>
+                            </div>
+                        </div>
+                        <div class="glass-panel p-6 square-card border-l-4 border-green-600 hover:bg-stone-50 transition duration-300 group cursor-pointer flex items-center space-x-6" onclick="router.navigate('producer')">
+                            <div class="h-12 w-12 square-card bg-green-600 text-white flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-leaf text-xl"></i>
+                            </div>
+                            <div class="text-left">
+                                <h3 class="text-stone-900 font-bold text-lg">Producer Dashboard</h3>
+                                <p class="text-sm text-stone-500">Log waste, track location quality & earn credits.</p>
+                            </div>
+                        </div>
+                        <div class="glass-panel p-6 square-card border-l-4 border-stone-600 hover:bg-stone-50 transition duration-300 group cursor-pointer flex items-center space-x-6" onclick="router.navigate('processor')">
+                            <div class="h-12 w-12 square-card bg-stone-600 text-white flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-gears text-xl"></i>
+                            </div>
+                            <div class="text-left">
+                                <h3 class="text-stone-900 font-bold text-lg">Processor Dashboard</h3>
+                                <p class="text-sm text-stone-500">Manage units, inventory & processing flows.</p>
+                            </div>
+                        </div>
+                        <div class="glass-panel p-6 square-card border-l-4 border-yellow-600 hover:bg-stone-50 transition duration-300 group cursor-pointer flex items-center space-x-6" onclick="router.navigate('farmer')">
+                            <div class="h-12 w-12 square-card bg-yellow-600 text-white flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-basket-shopping text-xl"></i>
+                            </div>
+                            <div class="text-left">
+                                <h3 class="text-stone-900 font-bold text-lg">Farmer Dashboard</h3>
+                                <p class="text-sm text-stone-500">Buy fertilizers, AI soil tips & track impact.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAdmin() {
+            const activeTab = state.subViews.admin;
+            const getTabClass = (tab) => activeTab === tab ? 'nav-tab-active' : 'nav-tab-inactive';
+            return `
+                <div class="animate-fade-in space-y-6">
+                    <div class="flex justify-between items-end pb-2 border-b border-stone-200">
+                        <div><h2 class="text-3xl font-display font-bold text-stone-900">System Overview</h2></div>
+                        <span class="px-3 py-1 square-card bg-green-100 border border-green-200 text-green-700 text-xs font-bold animate-pulse">LIVE</span>
+                    </div>
+                    <div class="flex space-x-6 mb-6">
+                        <button onclick="router.setSubView('admin', 'metrics')" class="px-4 py-2 text-sm font-bold uppercase transition ${getTabClass('metrics')}">Metrics</button>
+                        <button onclick="router.setSubView('admin', 'iot')" class="px-4 py-2 text-sm font-bold uppercase transition ${getTabClass('iot')}">IoT Grid</button>
+                        <button onclick="router.setSubView('admin', 'orders')" class="px-4 py-2 text-sm font-bold uppercase transition ${getTabClass('orders')}">Orders</button>
+                    </div>
+                    ${activeTab === 'metrics' ? `<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="glass-panel p-6 square-card border-l-8 border-green-600 bg-white"><p class="text-stone-500 text-xs font-bold uppercase mb-2">Total Waste</p><h3 class="text-3xl font-bold text-stone-900">${formatNum(state.stats.totalWaste)}kg</h3></div>
+                        <div class="glass-panel p-6 square-card border-l-8 border-blue-600 bg-white"><p class="text-stone-500 text-xs font-bold uppercase mb-2">Fertilizer</p><h3 class="text-3xl font-bold text-stone-900">${formatNum(state.stats.fertilizerProduced)}kg</h3></div>
+                        <div class="glass-panel p-6 square-card border-l-8 border-yellow-600 bg-white"><p class="text-stone-500 text-xs font-bold uppercase mb-2">Revenue</p><h3 class="text-3xl font-bold text-stone-900">$${formatNum(state.stats.feedSales)}</h3></div>
+                        <div class="glass-panel p-6 square-card border-l-8 border-brown-600 bg-white"><p class="text-stone-500 text-xs font-bold uppercase mb-2">CO₂ Saved</p><h3 class="text-3xl font-bold text-stone-900">${formatNum(state.stats.co2Saved)}kg</h3></div>
+                    </div>` : ''}
+                    
+                    ${activeTab === 'iot' ? `<div class="glass-panel p-6 square-card"><h3 class="text-xl font-bold text-stone-900 mb-6">Sensor Grid</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-4">${state.processor.units.map(u => `<div class="bg-stone-50 p-4 square-card border border-stone-200"><div class="flex justify-between mb-2"><span class="font-bold text-stone-800">${u.name}</span><span class="text-green-600 text-xs font-bold">Active</span></div><div class="w-full bg-stone-200 h-2 square-card"><div class="bg-green-600 h-2" style="width:${u.progress}%"></div></div></div>`).join('')}</div></div>` : ''}
+
+                    ${activeTab === 'orders' ? `<div class="glass-panel p-6 square-card"><h3 class="text-xl font-bold text-stone-900 mb-6">Pending Approvals</h3><div class="space-y-4"><div class="flex justify-between p-4 bg-stone-50 square-card border border-stone-200"><p class="text-stone-800 font-bold">Order #8821 <span class="text-stone-500 font-normal text-xs ml-2">500kg Compost</span></p><button onclick="approveOrder(1)" id="btn-approve-1" class="text-green-700 text-xs font-bold border border-green-600 px-3 py-1 square-card hover:bg-green-700 hover:text-white transition">APPROVE</button></div></div></div>` : ''}
+                </div>
+            `;
+        }
+
+        function renderProducer() {
+            const activeTab = state.subViews.producer;
+            const getTabClass = (tab) => activeTab === tab ? 'nav-tab-active' : 'nav-tab-inactive';
+            return `
+                <div class="animate-fade-in space-y-6">
+                    <div class="border-b border-stone-200 mb-6">
+                        <h2 class="text-2xl font-bold text-stone-900 mb-2">Producer Dashboard</h2>
+                        <div class="flex space-x-6 mt-4">
+                            <button onclick="router.setSubView('producer', 'log')" class="px-4 py-2 text-sm font-bold uppercase transition ${getTabClass('log')}">Log & Wallet</button>
+                            <button onclick="router.setSubView('producer', 'quality')" class="px-4 py-2 text-sm font-bold uppercase transition ${getTabClass('quality')}">Quality Reports</button>
+                        </div>
+                    </div>
+                    ${activeTab === 'log' ? `
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div class="glass-panel p-6 square-card">
+                                <h3 class="text-lg font-bold text-stone-900 mb-4">Log Waste</h3>
+                                <form onsubmit="handleWasteSubmit(event)" class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-stone-500 uppercase mb-1">Waste Type</label>
+                                        <select id="wasteType" class="w-full bg-stone-50 border border-stone-300 text-stone-800 square-card p-3">
+                                            <option>Food Scraps</option><option>Green Waste</option><option>Animal Manure</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-stone-500 uppercase mb-1">County Location</label>
+                                        <select id="wasteLocation" class="w-full bg-stone-50 border border-stone-300 text-stone-800 square-card p-3">
+                                            <option value="">Select County</option>
+                                            ${state.counties.map(c => `<option value="${c}">${c}</option>`).join('')}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-stone-500 uppercase mb-1">Estimated Amount</label>
+                                        <select id="wasteAmount" class="w-full bg-stone-50 border border-stone-300 text-stone-800 square-card p-3">
+                                            <option value="">Select Range</option>
+                                            <option value="10">< 10 kg</option>
+                                            <option value="25">10 - 50 kg</option>
+                                            <option value="75">50 - 100 kg</option>
+                                            <option value="150">100 - 200 kg</option>
+                                            <option value="300">200 - 500 kg</option>
+                                            <option value="1000">500+ kg</option>
+                                        </select>
+                                    </div>
+                                    <button class="w-full bg-green-700 text-white font-bold py-3 square-card hover:bg-green-800">Submit</button>
+                                </form>
+                            </div>
+                            <div class="space-y-6">
+                                <div class="bg-white p-6 square-card border border-green-200 shadow-md">
+                                    <h1 class="text-5xl font-bold text-green-700">${state.producer.credits} <span class="text-lg text-stone-500">PTS</span></h1>
+                                    <button class="w-full mt-4 border border-green-600 text-green-700 py-2 square-card hover:bg-green-700 hover:text-white transition">Request Payout</button>
+                                </div>
+                            </div>
+                        </div>` : ''}
+                    
+                    ${activeTab === 'quality' ? `
+                        <div class="glass-panel p-8 square-card border-l-4 border-blue-600">
+                            <h3 class="text-xl font-bold text-stone-900 mb-6">Detailed Analysis Logs</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm">
+                                    <thead class="text-stone-500 border-b border-stone-200 bg-stone-50">
+                                        <tr>
+                                            <th class="p-3">Batch ID</th>
+                                            <th class="p-3">Date</th>
+                                            <th class="p-3">Moisture</th>
+                                            <th class="p-3">Contamination</th>
+                                            <th class="p-3">Grade</th>
+                                            <th class="p-3">Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-stone-200">
+                                        ${state.producer.analysisLogs.map(log => `
+                                            <tr class="hover:bg-stone-50">
+                                                <td class="p-3 text-green-700 font-mono font-bold">${log.batch}</td>
+                                                <td class="p-3 text-stone-600">${log.date}</td>
+                                                <td class="p-3 text-stone-800">${log.moisture}</td>
+                                                <td class="p-3 text-stone-800">${log.contam}</td>
+                                                <td class="p-3"><span class="bg-green-100 text-green-800 px-2 py-1 square-card text-xs font-bold border border-green-200">${log.grade}</span></td>
+                                                <td class="p-3 text-stone-500 italic text-xs max-w-xs">${log.notes}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>` : ''}
+                </div>
+            `;
+        }
+
+        function renderProcessor() {
+            const activeTab = state.subViews.processor;
+            const getTabClass = (tab) => activeTab === tab ? 'nav-tab-active' : 'nav-tab-inactive';
+
+            return `
+                <div class="animate-fade-in space-y-6">
+                    <div class="border-b border-stone-200 mb-6">
+                        <h2 class="text-2xl font-bold text-stone-900 mb-2">Processor Dashboard</h2>
+                        <div class="flex space-x-6 mt-4">
+                            <button onclick="router.setSubView('processor', 'inventory')" class="px-4 py-2 text-sm font-bold uppercase tracking-wide transition ${getTabClass('inventory')}">Raw Inventory</button>
+                            <button onclick="router.setSubView('processor', 'products')" class="px-4 py-2 text-sm font-bold uppercase tracking-wide transition ${getTabClass('products')}">Market Products</button>
+                            <button onclick="router.setSubView('processor', 'ops')" class="px-4 py-2 text-sm font-bold uppercase tracking-wide transition ${getTabClass('ops')}">Unit Operations</button>
+                            <button onclick="router.setSubView('processor', 'intake')" class="px-4 py-2 text-sm font-bold uppercase tracking-wide transition ${getTabClass('intake')}">Intake Log</button>
+                        </div>
+                    </div>
+
+                    <!-- TAB: Inventory Table -->
+                    <div class="${activeTab === 'inventory' ? 'block' : 'hidden'} animate-fade-in">
+                        <div class="glass-panel p-6 square-card">
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="text-xl font-bold text-stone-900">Raw Material Stock</h3>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="text-xs text-stone-500 border-b border-stone-200 uppercase bg-stone-50">
+                                            <th class="p-4">Item ID</th>
+                                            <th class="p-4">Type</th>
+                                            <th class="p-4">Batch Ref</th>
+                                            <th class="p-4">Quantity</th>
+                                            <th class="p-4">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-sm divide-y divide-stone-200">
+                                        ${state.processor.inventoryList.map(item => `
+                                            <tr class="hover:bg-stone-50 transition">
+                                                <td class="p-4 font-mono text-stone-500">${item.id}</td>
+                                                <td class="p-4 text-stone-900 font-bold">${item.type}</td>
+                                                <td class="p-4 text-stone-500">${item.batch}</td>
+                                                <td class="p-4 text-green-700 font-bold text-lg">${item.qty} ${item.unit}</td>
+                                                <td class="p-4"><span class="px-2 py-1 square-card bg-stone-100 border border-stone-300 text-xs text-stone-600 uppercase font-bold">${item.status}</span></td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: Product Management (New) -->
+                    <div class="${activeTab === 'products' ? 'block' : 'hidden'} animate-fade-in">
+                        <div class="glass-panel p-6 square-card">
+                            <h3 class="text-xl font-bold text-stone-900 mb-4">Manage Marketplace Products</h3>
+                            <p class="text-sm text-stone-500 mb-6">Update stock levels and pricing. Changes here are instantly reflected on the Farmer's dashboard.</p>
+                            
+                            <div class="grid grid-cols-1 gap-4">
+                                ${state.market.map(prod => `
+                                    <div class="flex items-center justify-between p-4 bg-stone-50 border border-stone-200 square-card">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="h-10 w-10 ${prod.color} flex items-center justify-center square-card">
+                                                <i class="fa-solid ${prod.icon} ${prod.iconColor}"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-bold text-stone-900">${prod.name}</p>
+                                                <p class="text-xs text-stone-500">${prod.unit} • $${prod.price}</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-4">
+                                            <div class="text-right">
+                                                <label class="block text-xs font-bold text-stone-500 uppercase">Stock</label>
+                                                <input type="number" id="stock-edit-${prod.id}" value="${prod.stock}" class="w-20 p-1 border border-stone-300 square-card text-center bg-white">
+                                            </div>
+                                            <button onclick="updateProductStock(${prod.id})" class="px-4 py-2 bg-green-700 text-white text-xs font-bold uppercase square-card hover:bg-green-800">Update</button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: Unit Operations (Gauges) -->
+                    <div class="${activeTab === 'ops' ? 'block' : 'hidden'} animate-fade-in">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            ${state.processor.units.map(unit => `
+                                <div class="glass-panel p-6 square-card flex flex-col items-center">
+                                    <h4 class="text-stone-900 font-bold mb-4 text-center h-10 flex items-center justify-center">${unit.name}</h4>
+                                    <div class="w-48 mb-2">
+                                        ${generateGauge(unit.progress, unit.color)}
+                                    </div>
+                                    <div class="text-center mt-[-10px]">
+                                        <p class="text-stone-500 text-sm">Est. Completion</p>
+                                        <p class="text-xl font-bold text-stone-900">${unit.daysLeft} Days</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- TAB: Intake Log -->
+                    <div class="${activeTab === 'intake' ? 'block' : 'hidden'} animate-fade-in">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <!-- Left: Form -->
+                            <div class="glass-panel p-6 square-card border-t-4 border-green-600">
+                                <h3 class="text-lg font-bold text-stone-900 mb-4">Log New Batch</h3>
+                                <form onsubmit="handleIntakeLog(event)" class="space-y-4">
+                                    <div>
+                                        <label class="text-xs text-stone-500 uppercase font-bold">Source ID</label>
+                                        <input type="text" id="intakeSource" class="w-full mt-1 bg-stone-50 border border-stone-300 text-stone-900 p-3 square-card focus:border-green-600 outline-none">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-stone-500 uppercase font-bold">Net Weight (kg)</label>
+                                        <input type="number" id="intakeWeight" class="w-full mt-1 bg-stone-50 border border-stone-300 text-stone-900 p-3 square-card focus:border-green-600 outline-none">
+                                    </div>
+                                    <button type="submit" class="w-full bg-stone-900 text-white font-bold py-3 square-card hover:bg-stone-800 transition">Confirm Intake</button>
+                                </form>
+                            </div>
+                            
+                            <!-- Right: History List -->
+                            <div class="lg:col-span-2 glass-panel p-6 square-card">
+                                <h3 class="text-stone-900 font-bold mb-4">Daily Intake History</h3>
+                                <div class="space-y-2">
+                                    ${state.processor.intakeLog.length === 0 ? '<p class="text-stone-500 italic">No logs today.</p>' : ''}
+                                    ${state.processor.intakeLog.map(log => `
+                                        <div class="flex justify-between items-center bg-stone-50 p-4 square-card border-l-4 border-green-600">
+                                            <div>
+                                                <p class="text-stone-900 font-bold">${log.source}</p>
+                                                <p class="text-xs text-stone-500">${log.time}</p>
+                                            </div>
+                                            <p class="text-xl font-mono text-green-700 font-bold">${log.weight}kg</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFarmer() {
+            const activeTab = state.subViews.farmer;
+            const getTabClass = (tab) => activeTab === tab ? 'nav-tab-active' : 'nav-tab-inactive';
+            const cartCount = state.cart.reduce((sum, item) => sum + item.qty, 0);
+            const subtotal = state.cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            const total = subtotal + state.deliveryFee;
+
+            return `
+                <div class="animate-fade-in space-y-6">
+                    <div class="border-b border-stone-200 mb-6 flex flex-col md:flex-row justify-between items-end">
+                        <div>
+                            <h2 class="text-2xl font-bold text-stone-900 mb-2">Farmer Dashboard</h2>
+                            <div class="flex space-x-6 mt-4">
+                                <button onclick="router.setSubView('farmer', 'market')" class="px-4 py-2 text-sm font-bold uppercase transition ${getTabClass('market')}">Marketplace</button>
+                                <button onclick="router.setSubView('farmer', 'impact')" class="px-4 py-2 text-sm font-bold uppercase transition ${getTabClass('impact')}">Impact</button>
+                                <button onclick="router.setSubView('farmer', 'orders')" class="px-4 py-2 text-sm font-bold uppercase transition ${getTabClass('orders')}">Orders</button>
+                            </div>
+                        </div>
+                        <button onclick="router.setSubView('farmer', 'cart')" class="mb-2 bg-white border border-stone-300 px-4 py-2 square-card hover:bg-stone-50 transition flex items-center shadow-sm text-stone-700">
+                            <i class="fa-solid fa-cart-shopping text-green-700 mr-2"></i>
+                            <span class="font-bold">Cart (${cartCount})</span>
+                        </button>
+                    </div>
+
+                    <!-- TAB: Marketplace -->
+                    <div class="${activeTab === 'market' ? 'block' : 'hidden'} animate-fade-in">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            ${state.market.map(product => `
+                                <div class="glass-panel square-card overflow-hidden group hover:shadow-lg transition">
+                                    <!-- Square Picture Placeholder -->
+                                    <div class="aspect-square w-full ${product.color} flex items-center justify-center relative">
+                                        <i class="fa-solid ${product.icon} text-6xl ${product.iconColor} group-hover:scale-110 transition duration-500"></i>
+                                        <span class="absolute top-2 right-2 bg-white text-stone-800 text-xs px-2 py-1 square-card font-bold border border-stone-200 shadow-sm">Stock: ${product.stock}</span>
+                                    </div>
+                                    <div class="p-4">
+                                        <h3 class="text-stone-900 font-bold truncate mb-1">${product.name}</h3>
+                                        <p class="text-stone-500 text-xs mb-3 font-bold uppercase">${product.unit}</p>
+                                        <div class="flex justify-between items-center mb-3">
+                                            <span class="text-xl font-bold text-green-700">$${product.price}</span>
+                                            <input type="number" id="qty-${product.id}" value="1" min="1" max="${product.stock}" class="w-12 bg-stone-50 border border-stone-300 text-stone-900 text-center p-1 square-card">
+                                        </div>
+                                        <button onclick="addToCart(${product.id})" ${product.stock === 0 ? 'disabled' : ''} class="w-full bg-stone-800 hover:bg-stone-700 disabled:bg-stone-300 text-white py-2 square-card font-bold text-sm uppercase transition">
+                                            ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                                        </button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- TAB: Cart -->
+                    <div class="${activeTab === 'cart' ? 'block' : 'hidden'} animate-fade-in">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <div class="lg:col-span-2 space-y-6">
+                                <div class="glass-panel p-6 square-card">
+                                    <h3 class="text-stone-900 font-bold mb-6 border-b border-stone-200 pb-2">Shopping Cart</h3>
+                                    ${state.cart.length === 0 
+                                        ? `<div class="text-center py-10"><p class="text-stone-500">Your cart is empty.</p><button onclick="router.setSubView('farmer', 'market')" class="mt-4 text-green-700 hover:text-green-800 underline font-bold">Go to Marketplace</button></div>`
+                                        : `<div class="space-y-4">
+                                            ${state.cart.map(item => `
+                                                <div class="flex justify-between items-center bg-stone-50 p-4 square-card border border-stone-200">
+                                                    <div class="flex items-center">
+                                                        <div class="h-12 w-12 ${item.color} flex items-center justify-center mr-4 square-card border border-stone-200">
+                                                            <i class="fa-solid ${item.icon} ${item.iconColor}"></i>
+                                                        </div>
+                                                        <div>
+                                                            <h4 class="text-stone-900 font-bold">${item.name}</h4>
+                                                            <p class="text-stone-500 text-xs">${item.qty} x $${item.price}</p>
+                                                        </div>
+                                                    </div>
+                                                    <p class="text-green-700 font-bold">$${item.qty * item.price}</p>
+                                                </div>
+                                            `).join('')}
+                                        </div>`
+                                    }
+                                </div>
+                                
+                                <!-- Delivery Details Form (Only if cart not empty) -->
+                                ${state.cart.length > 0 ? `
+                                    <div class="glass-panel p-6 square-card border-l-4 border-brown-600">
+                                        <h3 class="text-stone-900 font-bold mb-4">Shipping Details</h3>
+                                        <form id="checkoutForm" class="space-y-4">
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <input type="text" id="checkoutName" placeholder="Full Name" class="w-full p-3 bg-stone-50 border border-stone-300 text-stone-900 square-card">
+                                                <input type="text" id="checkoutPhone" placeholder="Phone Number" class="w-full p-3 bg-stone-50 border border-stone-300 text-stone-900 square-card">
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label class="block text-xs font-bold text-stone-500 uppercase">Delivery Method</label>
+                                                <div class="flex items-center space-x-6 bg-stone-50 p-3 border border-stone-300">
+                                                    <label class="flex items-center space-x-2 cursor-pointer">
+                                                        <input type="radio" name="deliveryType" value="pickup" checked onchange="updateDeliveryFee()" class="text-green-700 focus:ring-green-700">
+                                                        <span class="text-stone-800">Pick-up Point (Free)</span>
+                                                    </label>
+                                                    <label class="flex items-center space-x-2 cursor-pointer">
+                                                        <input type="radio" name="deliveryType" value="door" onchange="updateDeliveryFee()" class="text-green-700 focus:ring-green-700">
+                                                        <span class="text-stone-800">Door Delivery (+Ksh 500)</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div id="locationField" class="${state.deliveryType === 'door' ? 'block' : 'block'}">
+                                                <input type="text" id="checkoutLocation" placeholder="Delivery Location / Pick-up Station" class="w-full p-3 bg-stone-50 border border-stone-300 text-stone-900 square-card">
+                                            </div>
+                                        </form>
+                                    </div>
+                                ` : ''}
+                            </div>
+
+                            <!-- Order Summary -->
+                            <div class="glass-panel p-6 square-card h-fit">
+                                <h3 class="text-stone-900 font-bold mb-4">Order Summary</h3>
+                                <div class="flex justify-between mb-2 text-stone-500 text-sm">
+                                    <span>Subtotal</span>
+                                    <span>$${subtotal}</span>
+                                </div>
+                                <div class="flex justify-between mb-2 text-stone-500 text-sm">
+                                    <span>Delivery Fee</span>
+                                    <span>$${state.deliveryFee}</span>
+                                </div>
+                                <div class="flex justify-between mb-6 text-stone-900 font-bold text-xl border-t border-stone-200 pt-2">
+                                    <span>Total</span>
+                                    <span>$${total}</span>
+                                </div>
+                                <button onclick="checkout(event)" class="w-full bg-green-700 hover:bg-green-800 text-white py-3 square-card font-bold uppercase mb-3">Place Order</button>
+                                <button onclick="router.setSubView('farmer', 'market')" class="w-full border border-stone-300 text-stone-500 py-3 square-card font-bold uppercase hover:bg-stone-100 hover:text-stone-700">Continue Shopping</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: Impact -->
+                    <div class="${activeTab === 'impact' ? 'block' : 'hidden'} animate-fade-in">
+                        <div class="glass-panel p-6 square-card text-center py-12">
+                            <i class="fa-solid fa-earth-americas text-6xl text-blue-600 mb-4"></i>
+                            <h2 class="text-5xl font-bold text-stone-900 mb-2">${state.farmer.impact}kg</h2>
+                            <p class="text-stone-500 uppercase tracking-widest font-bold">CO₂ Offsets Purchased</p>
+                        </div>
+                    </div>
+
+                    <!-- TAB: Orders -->
+                    <div class="${activeTab === 'orders' ? 'block' : 'hidden'} animate-fade-in">
+                        <div class="glass-panel p-6 square-card">
+                            <h3 class="text-stone-900 font-bold mb-4">Track Order</h3>
+                            <form onsubmit="trackOrder(event)" class="flex mb-8">
+                                <input type="text" id="trackInput" placeholder="Enter Shipment ID (e.g., TRK-1234)" class="flex-grow p-3 bg-stone-50 border border-stone-300 text-stone-900 square-card border-r-0">
+                                <button class="bg-brown-600 text-white px-6 font-bold square-card hover:bg-brown-500">Track</button>
+                            </form>
+
+                            <h3 class="text-stone-900 font-bold mb-6">Order History</h3>
+                            <div class="space-y-2">
+                                ${state.farmer.orders.map(o => `
+                                    <div class="bg-stone-50 p-4 square-card border-l-4 border-yellow-500 flex justify-between border border-stone-200">
+                                        <div>
+                                            <p class="text-stone-900 font-bold">${o.name}</p>
+                                            <p class="text-xs text-stone-500">${o.date} <span class="ml-2 font-mono bg-stone-200 px-1 text-stone-600">ID: ${o.id || 'N/A'}</span></p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-stone-600">Qty: ${o.qty || 1}</p>
+                                            <p class="text-yellow-600 text-xs font-bold">${o.status}</p>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                                ${state.farmer.orders.length === 0 ? '<p class="text-stone-500 italic">No orders yet.</p>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- INIT ---
+        function render() {
+            const root = document.getElementById('app-root');
+            root.innerHTML = ''; 
+            switch(state.currentView) {
+                case 'landing': root.innerHTML = renderLanding(); initTypewriter(); break;
+                case 'admin': root.innerHTML = renderAdmin(); break;
+                case 'producer': root.innerHTML = renderProducer(); break;
+                case 'farmer': root.innerHTML = renderFarmer(); break;
+                case 'processor': root.innerHTML = renderProcessor(); break;
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        let i = 0;
+        const text = "Welcome to Waste to Wealth";
+        function initTypewriter() {
+            const elem = document.getElementById("typewriter");
+            if(!elem) return;
+            elem.innerHTML = "";
+            i = 0;
+            typeWriter();
+        }
+
+        function typeWriter() {
+            const elem = document.getElementById("typewriter");
+            if (elem && i < text.length) {
+                elem.innerHTML += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 100);
+            }
+        }
+
+        window.addEventListener('load', () => {
+            render(); 
+        });
+
+    </script>
+</body>
+</html>
