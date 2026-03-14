@@ -170,7 +170,7 @@
                 <div id="payment-mpesa" class="block space-y-6">
                     <div>
                         <label class="block text-[10px] font-bold uppercase tracking-widest opacity-60 mb-2">M-Pesa Phone Number</label>
-                        <input type="text" placeholder="07XX XXX XXX" class="w-full text-lg" value="0712345678">
+                        <input type="text" id="mpesa-phone" placeholder="07XX XXX XXX" class="w-full text-lg" value="0713910654">
                         <p class="text-[10px] opacity-60 mt-2 font-bold uppercase tracking-widest">An STK push will be sent to your phone.</p>
                     </div>
                 </div>
@@ -343,9 +343,14 @@
 
         // --- PAYMENT MODAL LOGIC ---
         let pendingPaymentCallback = null;
+        let currentPaymentAmount = 0;
+        let currentPaymentDesc = '';
 
         function showPaymentModal(amount, description, callback) {
             pendingPaymentCallback = callback;
+            currentPaymentAmount = amount;
+            currentPaymentDesc = description;
+            
             document.getElementById('payment-amount').innerText = `Ksh ${formatNum(amount)}`;
             document.getElementById('payment-desc').innerText = description;
             document.getElementById('btn-pay-action').innerText = `Pay Ksh ${formatNum(amount)}`;
@@ -380,17 +385,50 @@
             }
         }
 
-        function processPayment() {
+        async function processPayment() {
+            const phone = document.getElementById('mpesa-phone').value;
             const btn = document.getElementById('btn-pay-action');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Processing...';
+
+            if (!phone) return showToast('Please enter your M-Pesa number', 'error');
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Requesting M-Pesa...';
             btn.disabled = true;
 
-            setTimeout(() => {
+            try {
+                // Send the payment request to your LIVE backend!
+                const response = await fetch('https://smacome-backend.onrender.com/api/pay', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        phone: phone,
+                        amount: 1, // Hardcoded to 1 Ksh for testing purposes
+                        accountReference: 'W2W Platform',
+                        transactionDesc: currentPaymentDesc
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showToast('STK Push sent! Please check your phone.', 'info');
+                    
+                    // Wait 5 seconds to simulate Safaricom processing, then close modal
+                    setTimeout(() => {
+                        btn.innerHTML = 'Confirm Payment';
+                        btn.disabled = false;
+                        closePaymentModal();
+                        if(pendingPaymentCallback) pendingPaymentCallback();
+                    }, 5000);
+                } else {
+                    showToast(data.error || 'Payment request failed', 'error');
+                    btn.innerHTML = 'Confirm Payment';
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                showToast('Network error. Is your backend running?', 'error');
                 btn.innerHTML = 'Confirm Payment';
                 btn.disabled = false;
-                closePaymentModal();
-                if(pendingPaymentCallback) pendingPaymentCallback();
-            }, 1500);
+            }
         }
 
 
