@@ -33,6 +33,19 @@
                             600: '#57534e',
                             800: '#292524',
                             900: '#1c1917',
+                        },
+                        green: {
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        brown: {
+                            600: '#854d0e',
+                            700: '#713f12',
+                            800: '#57330e',
                         }
                     }
                 }
@@ -56,13 +69,13 @@
         input[type=text], input[type=number], input[type=email], input[type=password], select {
             border: none;
             background-color: transparent;
-            padding: 12px 0;
+            padding: 10px 0;
             outline: none;
             border-radius: 0;
             border-bottom: 2px solid currentColor;
             opacity: 0.6;
             width: 100%;
-            font-size: 1.125rem;
+            font-size: 1rem;
             color: inherit;
             transition: opacity 0.2s ease;
         }
@@ -93,13 +106,10 @@
         button { border-radius: 0; }
         button:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        .nav-tab-active {
-            border-bottom: 3px solid currentColor;
-            font-weight: 700;
-        }
-        .nav-tab-inactive {
-            border-bottom: 3px solid transparent;
-            opacity: 0.6;
+        /* Payment Modal Specifics to ensure inputs show correctly on white bg */
+        #payment-modal input[type=text], #payment-modal input[type=number] {
+            color: #1c1917;
+            border-bottom-color: #1c1917;
         }
     </style>
 </head>
@@ -108,19 +118,19 @@
     <!-- Navigation -->
     <nav id="main-nav" class="fixed top-0 w-full z-50 border-b transition-colors duration-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-24">
+            <div class="flex items-center justify-between h-20">
                 <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="router.navigate('landing')">
-                    <i id="nav-icon" class="fa-solid fa-recycle text-3xl mr-4"></i>
-                    <span id="nav-brand" class="font-display text-2xl font-bold tracking-widest uppercase">Waste <span class="font-light">To</span> Wealth</span>
+                    <i id="nav-icon" class="fa-solid fa-recycle text-2xl mr-3"></i>
+                    <span id="nav-brand" class="font-display text-xl font-bold tracking-widest uppercase">Waste <span class="font-light">To</span> Wealth</span>
                 </div>
                 
-                <div id="desktop-nav-links" class="hidden md:flex space-x-10 items-center">
+                <div id="desktop-nav-links" class="hidden md:flex space-x-8 items-center">
                     <!-- Injected via JS based on auth state -->
                 </div>
 
                 <div class="md:hidden">
                     <button id="nav-menu-btn" onclick="toggleMobileMenu()" class="focus:outline-none">
-                        <i class="fa-solid fa-bars text-3xl"></i>
+                        <i class="fa-solid fa-bars text-2xl"></i>
                     </button>
                 </div>
             </div>
@@ -134,7 +144,58 @@
     </nav>
 
     <!-- Main Content Area -->
-    <main id="app-root" class="flex-grow pt-40 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full mb-32"></main>
+    <main id="app-root" class="flex-grow pt-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full mb-20"></main>
+
+    <!-- Payment Modal (Hidden by default) -->
+    <div id="payment-modal" class="hidden fixed inset-0 z-[100] bg-stone-900/90 flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white text-stone-900 w-full max-w-md p-10 relative">
+            <button onclick="closePaymentModal()" class="absolute top-6 right-6 text-2xl font-bold opacity-50 hover:opacity-100 focus:outline-none">&times;</button>
+            <h2 class="text-3xl font-display font-bold mb-1">Checkout</h2>
+            <p id="payment-desc" class="text-[10px] font-bold uppercase tracking-widest opacity-60 mb-8">Payment Description</p>
+            
+            <div class="mb-10">
+                <p class="text-[10px] font-bold uppercase tracking-widest mb-1 opacity-60">Amount Due</p>
+                <h3 id="payment-amount" class="text-4xl font-bold text-green-700">Ksh 0</h3>
+            </div>
+
+            <div class="space-y-8">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest mb-4 opacity-60">Select Payment Method</label>
+                    <div class="flex space-x-4 border-b-2 border-stone-200">
+                        <button onclick="switchPaymentMethod('mpesa')" id="btn-mpesa" class="flex-1 pb-3 text-xs font-bold uppercase tracking-widest border-b-2 border-green-700 text-green-700 -mb-[2px] transition-colors">M-Pesa</button>
+                        <button onclick="switchPaymentMethod('card')" id="btn-card" class="flex-1 pb-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-stone-500 hover:text-stone-900 -mb-[2px] transition-colors">Card</button>
+                    </div>
+                </div>
+
+                <div id="payment-mpesa" class="block space-y-6">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest opacity-60 mb-2">M-Pesa Phone Number</label>
+                        <input type="text" placeholder="07XX XXX XXX" class="w-full text-lg" value="0712345678">
+                        <p class="text-[10px] opacity-60 mt-2 font-bold uppercase tracking-widest">An STK push will be sent to your phone.</p>
+                    </div>
+                </div>
+
+                <div id="payment-card" class="hidden space-y-6">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest opacity-60 mb-2">Card Number</label>
+                        <input type="text" placeholder="XXXX XXXX XXXX XXXX" class="w-full text-lg">
+                    </div>
+                    <div class="flex space-x-6">
+                        <div class="flex-1">
+                            <label class="block text-[10px] font-bold uppercase tracking-widest opacity-60 mb-2">Expiry</label>
+                            <input type="text" placeholder="MM/YY" class="w-full text-lg">
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-[10px] font-bold uppercase tracking-widest opacity-60 mb-2">CVV</label>
+                            <input type="text" placeholder="123" class="w-full text-lg">
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="processPayment()" id="btn-pay-action" class="w-full bg-stone-900 text-white font-bold py-4 uppercase tracking-widest text-xs mt-4 hover:bg-green-800 transition-colors">Confirm Payment</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Toast Notifications -->
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
@@ -224,7 +285,7 @@
             navigate: (view) => {
                 // Auth Guard
                 if (['admin', 'producer', 'processor', 'farmer'].includes(view)) {
-                    if (state.currentUserRole !== view) {
+                    if (state.currentUserRole !== view && state.currentUserRole !== 'admin') {
                         showToast(`Access Denied. Please login to access the ${view} dashboard.`, 'error');
                         return router.navigate('login');
                     }
@@ -246,11 +307,12 @@
                 isDark,
                 textPrimary: isDark ? 'text-stone-50' : 'text-stone-900',
                 textSecondary: isDark ? 'text-stone-300' : 'text-stone-600',
+                accentColor: isDark ? 'text-green-400' : 'text-stone-900',
                 borderPrimary: isDark ? 'border-stone-50' : 'border-stone-900',
                 borderSecondary: isDark ? 'border-stone-50/20' : 'border-stone-900/20',
-                tabActive: isDark ? 'text-stone-50 border-stone-50' : 'text-stone-900 border-stone-900',
+                tabActive: isDark ? 'text-green-400 border-green-400' : 'text-stone-900 border-stone-900',
                 tabInactive: isDark ? 'text-stone-400 border-transparent' : 'text-stone-500 border-transparent',
-                btnClass: isDark ? 'bg-stone-50 text-stone-900 font-bold py-4 px-8 uppercase tracking-widest text-sm' : 'bg-stone-900 text-white font-bold py-4 px-8 uppercase tracking-widest text-sm'
+                btnClass: isDark ? 'bg-green-600 text-white font-bold py-4 px-8 uppercase tracking-widest text-xs transition-colors hover:bg-green-500' : 'bg-stone-900 text-white font-bold py-4 px-8 uppercase tracking-widest text-xs transition-colors hover:bg-stone-800'
             };
         }
 
@@ -265,10 +327,10 @@
             
             const icon = type === 'success' ? 'fa-check' : (type === 'info' ? 'fa-info-circle' : 'fa-exclamation');
             toast.innerHTML = `
-                <i class="fa-solid ${icon} text-xl mr-4"></i>
+                <i class="fa-solid ${icon} text-lg mr-4"></i>
                 <div>
-                    <h4 class="font-bold text-sm uppercase tracking-widest">${type}</h4>
-                    <p class="text-sm mt-1 opacity-80">${message}</p>
+                    <h4 class="font-bold text-xs uppercase tracking-widest">${type}</h4>
+                    <p class="text-xs mt-1 opacity-80">${message}</p>
                 </div>
             `;
             container.appendChild(toast);
@@ -279,24 +341,99 @@
             return new Intl.NumberFormat().format(num);
         }
 
+        // --- PAYMENT MODAL LOGIC ---
+        let pendingPaymentCallback = null;
+
+        function showPaymentModal(amount, description, callback) {
+            pendingPaymentCallback = callback;
+            document.getElementById('payment-amount').innerText = `Ksh ${formatNum(amount)}`;
+            document.getElementById('payment-desc').innerText = description;
+            document.getElementById('btn-pay-action').innerText = `Pay Ksh ${formatNum(amount)}`;
+            
+            // Reset to Mpesa default visually
+            switchPaymentMethod('mpesa');
+            
+            document.getElementById('payment-modal').classList.remove('hidden');
+        }
+
+        function closePaymentModal() {
+            document.getElementById('payment-modal').classList.add('hidden');
+            pendingPaymentCallback = null;
+        }
+
+        function switchPaymentMethod(method) {
+            const btnMpesa = document.getElementById('btn-mpesa');
+            const btnCard = document.getElementById('btn-card');
+            const viewMpesa = document.getElementById('payment-mpesa');
+            const viewCard = document.getElementById('payment-card');
+
+            if(method === 'mpesa') {
+                btnMpesa.className = 'flex-1 pb-3 text-xs font-bold uppercase tracking-widest border-b-2 border-green-700 text-green-700 -mb-[2px] transition-colors';
+                btnCard.className = 'flex-1 pb-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-stone-500 hover:text-stone-900 -mb-[2px] transition-colors';
+                viewMpesa.classList.remove('hidden');
+                viewCard.classList.add('hidden');
+            } else {
+                btnCard.className = 'flex-1 pb-3 text-xs font-bold uppercase tracking-widest border-b-2 border-green-700 text-green-700 -mb-[2px] transition-colors';
+                btnMpesa.className = 'flex-1 pb-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-stone-500 hover:text-stone-900 -mb-[2px] transition-colors';
+                viewCard.classList.remove('hidden');
+                viewMpesa.classList.add('hidden');
+            }
+        }
+
+        function processPayment() {
+            const btn = document.getElementById('btn-pay-action');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Processing...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.innerHTML = 'Confirm Payment';
+                btn.disabled = false;
+                closePaymentModal();
+                if(pendingPaymentCallback) pendingPaymentCallback();
+            }, 1500);
+        }
+
+
         // --- AUTH LOGIC ---
         function handleRegister(e) {
             e.preventDefault();
             const role = document.getElementById('regRole').value;
             if(!role) return showToast('Please select a role', 'error');
             
+            const tcBox = document.getElementById('tcCheckbox');
+            if(!tcBox.checked) return showToast('You must agree to the Terms and Conditions', 'error');
+
+            localStorage.setItem('w2w_user_role', role);
             state.currentUserRole = role;
             showToast(`Registration complete. Welcome to the ${role} dashboard!`, 'success');
             router.navigate(role);
         }
 
+        function toggleTC(e) {
+            if(e) e.preventDefault();
+            const tcArea = document.getElementById('tcScrollArea');
+            if (tcArea.classList.contains('hidden')) {
+                tcArea.classList.remove('hidden');
+                tcArea.classList.add('flex');
+            } else {
+                tcArea.classList.add('hidden');
+                tcArea.classList.remove('flex');
+            }
+        }
+
+        function agreeTC() {
+            document.getElementById('tcCheckbox').checked = true;
+            document.getElementById('tcScrollArea').classList.add('hidden');
+            document.getElementById('tcScrollArea').classList.remove('flex');
+            showToast('Terms and Conditions accepted.', 'success');
+        }
+
         function handleLogin(e) {
             e.preventDefault();
-            const role = document.getElementById('loginRole').value;
-            if(!role) return showToast('Please select a role to login', 'error');
+            const role = localStorage.getItem('w2w_user_role') || 'farmer';
             
             state.currentUserRole = role;
-            showToast(`Logged in successfully as ${role}.`, 'success');
+            showToast(`Logged in successfully.`, 'success');
             router.navigate(role);
         }
 
@@ -322,28 +459,28 @@
             const weightFee = amount * 10; 
             const totalPickupFee = basePickupFee + weightFee;
             
-            const platformCommission = totalPickupFee * 0.15;
-            state.platformRevenue.pickupCommissions += platformCommission;
+            // Initiate Payment
+            showPaymentModal(totalPickupFee, `Logistics & Processing Fee (${amount}kg)`, () => {
+                const platformCommission = totalPickupFee * 0.15;
+                state.platformRevenue.pickupCommissions += platformCommission;
 
-            const earnedCredits = Math.floor(amount * 0.5);
-            state.producer.credits += earnedCredits;
-            state.stats.totalWaste += amount;
-            
-            state.producer.history.unshift({
-                id: Date.now(),
-                date: new Date().toISOString().split('T')[0],
-                type: type,
-                location: location,
-                amount: amount,
-                credits: earnedCredits,
-                pickupFee: totalPickupFee
-            });
+                const earnedCredits = Math.floor(amount * 0.5);
+                state.producer.credits += earnedCredits;
+                state.stats.totalWaste += amount;
+                
+                state.producer.history.unshift({
+                    id: Date.now(),
+                    date: new Date().toISOString().split('T')[0],
+                    type: type,
+                    location: location,
+                    amount: amount,
+                    credits: earnedCredits,
+                    pickupFee: totalPickupFee
+                });
 
-            showToast(`Payment mechanism initiated.`, 'info');
-            setTimeout(() => {
-                showToast(`Payment received. Pickup scheduled successfully! Earned ${earnedCredits} PTS.`);
+                showToast(`Payment successful! Pickup scheduled. Earned ${earnedCredits} PTS.`, 'success');
                 render();
-            }, 2000);
+            });
         }
 
         function addToCart(productId) {
@@ -384,55 +521,62 @@
                 return showToast('Please fill in all delivery details', 'error');
             }
 
-            const trackingId = "TRK-" + Math.floor(1000 + Math.random() * 9000);
             let orderSubtotal = 0;
             let orderDetailsStr = "";
-
-            const estDate = new Date();
-            estDate.setDate(estDate.getDate() + 3);
-
             state.cart.forEach(item => {
-                const itemTotal = item.price * item.qty;
-                orderSubtotal += itemTotal;
+                orderSubtotal += (item.price * item.qty);
                 orderDetailsStr += `${item.qty}x ${item.name}, `;
-                
-                state.farmer.orders.unshift({
-                    id: trackingId,
-                    name: item.name,
-                    qty: item.qty,
-                    total: itemTotal,
-                    date: new Date().toLocaleDateString(),
-                    status: 'Processing',
-                    estDelivery: estDate.toLocaleDateString()
+            });
+
+            const total = orderSubtotal + state.deliveryFee;
+
+            // Initiate Payment
+            showPaymentModal(total, `Marketplace Order & Shipping`, () => {
+                const trackingId = "TRK-" + Math.floor(1000 + Math.random() * 9000);
+                const estDate = new Date();
+                estDate.setDate(estDate.getDate() + 3);
+
+                state.cart.forEach(item => {
+                    const itemTotal = item.price * item.qty;
+                    state.farmer.orders.unshift({
+                        id: trackingId,
+                        name: item.name,
+                        qty: item.qty,
+                        total: itemTotal,
+                        date: new Date().toLocaleDateString(),
+                        status: 'Processing',
+                        estDelivery: estDate.toLocaleDateString()
+                    });
+                    state.stats.feedSales += itemTotal;
                 });
-                state.stats.feedSales += itemTotal;
-            });
-            
-            state.adminOrders.unshift({
-                id: trackingId,
-                farmerName: name,
-                details: orderDetailsStr.slice(0, -2),
-                total: orderSubtotal,
-                status: "Auto-Approved",
-                reason: "System verified stock availability."
-            });
+                
+                state.adminOrders.unshift({
+                    id: trackingId,
+                    farmerName: name,
+                    details: orderDetailsStr.slice(0, -2),
+                    total: total,
+                    status: "Auto-Approved",
+                    reason: "Payment secured & stock verified."
+                });
 
-            const platformCommission = orderSubtotal * 0.10;
-            state.platformRevenue.marketplaceCommissions += platformCommission;
+                const platformCommission = orderSubtotal * 0.10;
+                state.platformRevenue.marketplaceCommissions += platformCommission;
 
-            state.cart = [];
-            showToast(`Payment successful! Order Auto-Approved. Tracking ID: ${trackingId}`);
-            router.setSubView('farmer', 'orders');
+                state.cart = [];
+                showToast(`Payment successful! Order Auto-Approved. Tracking ID: ${trackingId}`, 'success');
+                router.setSubView('farmer', 'orders');
+            });
         }
 
         function bookTraining(id) {
             const course = state.academy.find(c => c.id === id);
-            showToast('Initiating payment method...', 'info');
-            setTimeout(() => {
+            
+            // Initiate Payment
+            showPaymentModal(course.fee, `Academy: ${course.title}`, () => {
                 state.platformRevenue.trainingFees += course.fee;
                 showToast(`Payment received! Confirmation sent via Email, SMS, & WhatsApp.`, 'success');
                 render();
-            }, 2500);
+            });
         }
 
         function handleIntakeLog(e) {
@@ -467,13 +611,13 @@
             const totalLen = 126;
             const strokeLen = (percentage / 100) * totalLen;
             const trackColor = t.isDark ? 'rgba(255,255,255,0.2)' : 'rgba(28,25,23,0.2)';
-            const fillColor = t.isDark ? '#ffffff' : '#1c1917';
+            const fillColor = t.isDark ? '#4ade80' : '#1c1917'; // vibrant green or black
 
             return `
                 <svg viewBox="0 0 100 60" class="w-full h-auto">
                     <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="${trackColor}" stroke-width="4" stroke-linecap="butt" />
                     <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="${fillColor}" stroke-width="4" stroke-linecap="butt" stroke-dasharray="${strokeLen} 1000" />
-                    <text x="50" y="45" text-anchor="middle" font-size="16" font-weight="bold" fill="${fillColor}">${percentage}%</text>
+                    <text x="50" y="45" text-anchor="middle" font-size="14" font-weight="bold" fill="${t.isDark ? '#fafaf9' : '#1c1917'}">${percentage}%</text>
                 </svg>
             `;
         }
@@ -488,31 +632,31 @@
             else if(order.status === 'Delivered') { progress = 100; isProcessing = true; isShipped = true; isDelivered = true; }
 
             const trackBg = t.isDark ? 'bg-stone-50/20' : 'bg-stone-900/20';
-            const fillBg = t.isDark ? 'bg-stone-50' : 'bg-stone-900';
-            const activeIcon = t.isDark ? 'text-stone-50' : 'text-stone-900';
+            const fillBg = t.isDark ? 'bg-green-400' : 'bg-stone-900';
+            const activeIcon = t.isDark ? 'text-green-400' : 'text-stone-900';
             const inactiveIcon = t.isDark ? 'text-stone-50/30' : 'text-stone-900/30';
 
             return `
-                <div class="mt-12 mb-8 w-full max-w-3xl">
+                <div class="mt-8 mb-6 w-full max-w-2xl">
                     <div class="relative flex items-center justify-between w-full">
-                        <div class="absolute left-0 top-4 w-full h-px ${trackBg} z-0"></div>
-                        <div class="absolute left-0 top-4 h-px ${fillBg} z-0" style="width: ${progress}%;"></div>
+                        <div class="absolute left-0 top-3 w-full h-px ${trackBg} z-0"></div>
+                        <div class="absolute left-0 top-3 h-px ${fillBg} z-0 transition-all duration-1000" style="width: ${progress}%;"></div>
                         
                         <div class="relative z-10 flex flex-col items-center">
-                            <div class="text-2xl ${activeIcon} bg-transparent px-2"><i class="fa-solid fa-check-circle"></i></div>
-                            <span class="text-xs font-bold mt-4 uppercase tracking-widest ${t.textPrimary}">Placed</span>
+                            <div class="text-xl ${activeIcon} bg-transparent px-2"><i class="fa-solid fa-check-circle"></i></div>
+                            <span class="text-xs font-bold mt-2 uppercase tracking-widest ${t.textPrimary}">Placed</span>
                         </div>
                         <div class="relative z-10 flex flex-col items-center">
-                            <div class="text-2xl ${isProcessing ? activeIcon : inactiveIcon} bg-transparent px-2"><i class="fa-solid fa-box"></i></div>
-                            <span class="text-xs font-bold mt-4 uppercase tracking-widest ${isProcessing ? t.textPrimary : t.textSecondary}">Warehouse</span>
+                            <div class="text-xl ${isProcessing ? activeIcon : inactiveIcon} bg-transparent px-2"><i class="fa-solid fa-box"></i></div>
+                            <span class="text-xs font-bold mt-2 uppercase tracking-widest ${isProcessing ? t.textPrimary : t.textSecondary}">Warehouse</span>
                         </div>
                         <div class="relative z-10 flex flex-col items-center">
-                            <div class="text-2xl ${isShipped ? activeIcon : inactiveIcon} bg-transparent px-2"><i class="fa-solid fa-truck"></i></div>
-                            <span class="text-xs font-bold mt-4 uppercase tracking-widest ${isShipped ? t.textPrimary : t.textSecondary}">Shipped</span>
+                            <div class="text-xl ${isShipped ? activeIcon : inactiveIcon} bg-transparent px-2"><i class="fa-solid fa-truck"></i></div>
+                            <span class="text-xs font-bold mt-2 uppercase tracking-widest ${isShipped ? t.textPrimary : t.textSecondary}">Shipped</span>
                         </div>
                         <div class="relative z-10 flex flex-col items-center">
-                            <div class="text-2xl ${isDelivered ? activeIcon : inactiveIcon} bg-transparent px-2"><i class="fa-solid fa-flag-checkered"></i></div>
-                            <span class="text-xs font-bold mt-4 uppercase tracking-widest ${isDelivered ? t.textPrimary : t.textSecondary}">Delivered</span>
+                            <div class="text-xl ${isDelivered ? activeIcon : inactiveIcon} bg-transparent px-2"><i class="fa-solid fa-flag-checkered"></i></div>
+                            <span class="text-xs font-bold mt-2 uppercase tracking-widest ${isDelivered ? t.textPrimary : t.textSecondary}">Delivered</span>
                         </div>
                     </div>
                 </div>
@@ -524,43 +668,43 @@
         function renderLanding() {
             const t = getTheme();
             return `
-                <div class="flex flex-col items-center justify-center min-h-[60vh] py-12 max-w-4xl mx-auto text-center">
-                    <div class="space-y-6">
-                        <span class="${t.textPrimary} text-xs font-bold tracking-widest uppercase border-b-2 ${t.borderPrimary} pb-2">Circular Economy V1.0</span>
-                        <h1 class="text-6xl md:text-8xl font-display font-bold ${t.textPrimary} leading-tight mt-8">
+                <div class="flex flex-col items-center justify-center min-h-[50vh] py-10 max-w-3xl mx-auto text-center">
+                    <div class="space-y-4">
+                        <span class="${t.textPrimary} text-xs font-bold tracking-widest uppercase border-b-2 ${t.borderPrimary} pb-1">Circular Economy V1.0</span>
+                        <h1 class="text-5xl md:text-6xl font-display font-bold ${t.textPrimary} leading-tight mt-6">
                             <span id="typewriter" class="${t.textPrimary} cursor"></span>
                         </h1>
-                        <p class="${t.textSecondary} text-xl md:text-2xl pt-8 leading-relaxed">
+                        <p class="${t.textSecondary} text-lg md:text-xl pt-6 leading-relaxed">
                             A completely decentralized platform connecting producers, farmers, and processors to transform organic waste into valuable resources.
                         </p>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-16 w-full mt-24 border-t-2 border-b-2 ${t.borderSecondary} py-16">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-12 w-full mt-16 border-t-2 border-b-2 ${t.borderSecondary} py-12">
                         <div>
-                            <div class="${t.textPrimary} text-4xl mb-4"><i class="fa-solid fa-chart-pie"></i></div>
-                            <h3 class="${t.textPrimary} font-bold text-2xl uppercase tracking-widest mb-3">Admin</h3>
-                            <p class="text-base ${t.textSecondary}">Oversee ecosystem & financials.</p>
+                            <div class="${t.textPrimary} text-3xl mb-3"><i class="fa-solid fa-chart-pie"></i></div>
+                            <h3 class="${t.textPrimary} font-bold text-xl uppercase tracking-widest mb-2">Admin</h3>
+                            <p class="text-sm ${t.textSecondary}">Oversee ecosystem & financials.</p>
                         </div>
                         <div>
-                            <div class="${t.textPrimary} text-4xl mb-4"><i class="fa-solid fa-leaf"></i></div>
-                            <h3 class="${t.textPrimary} font-bold text-2xl uppercase tracking-widest mb-3">Producer</h3>
-                            <p class="text-base ${t.textSecondary}">Log waste, track quality & learn.</p>
+                            <div class="${t.textPrimary} text-3xl mb-3"><i class="fa-solid fa-leaf"></i></div>
+                            <h3 class="${t.textPrimary} font-bold text-xl uppercase tracking-widest mb-2">Producer</h3>
+                            <p class="text-sm ${t.textSecondary}">Log waste, track quality & learn.</p>
                         </div>
                         <div>
-                            <div class="${t.textPrimary} text-4xl mb-4"><i class="fa-solid fa-gears"></i></div>
-                            <h3 class="${t.textPrimary} font-bold text-2xl uppercase tracking-widest mb-3">Processor</h3>
-                            <p class="text-base ${t.textSecondary}">Manage operations & products.</p>
+                            <div class="${t.textPrimary} text-3xl mb-3"><i class="fa-solid fa-gears"></i></div>
+                            <h3 class="${t.textPrimary} font-bold text-xl uppercase tracking-widest mb-2">Processor</h3>
+                            <p class="text-sm ${t.textSecondary}">Manage operations & products.</p>
                         </div>
                         <div>
-                            <div class="${t.textPrimary} text-4xl mb-4"><i class="fa-solid fa-basket-shopping"></i></div>
-                            <h3 class="${t.textPrimary} font-bold text-2xl uppercase tracking-widest mb-3">Farmer</h3>
-                            <p class="text-base ${t.textSecondary}">Buy products, track orders.</p>
+                            <div class="${t.textPrimary} text-3xl mb-3"><i class="fa-solid fa-basket-shopping"></i></div>
+                            <h3 class="${t.textPrimary} font-bold text-xl uppercase tracking-widest mb-2">Farmer</h3>
+                            <p class="text-sm ${t.textSecondary}">Buy products, track orders.</p>
                         </div>
                     </div>
 
-                    <div class="mt-16 flex flex-col sm:flex-row gap-6">
-                        <button onclick="router.navigate('register')" class="${t.textPrimary} border-2 ${t.borderPrimary} px-12 py-5 font-bold uppercase tracking-widest text-sm transition-colors">Register Account</button>
-                        <button onclick="router.navigate('login')" class="${t.textPrimary} border-2 border-transparent px-12 py-5 font-bold uppercase tracking-widest text-sm hover:${t.borderPrimary} transition-colors">Login</button>
+                    <div class="mt-12 flex flex-col sm:flex-row gap-4">
+                        <button onclick="router.navigate('register')" class="${t.textPrimary} border-2 ${t.borderPrimary} px-10 py-4 font-bold uppercase tracking-widest text-xs transition-colors">Register Account</button>
+                        <button onclick="router.navigate('login')" class="${t.textPrimary} border-2 border-transparent px-10 py-4 font-bold uppercase tracking-widest text-xs transition-colors hover:${t.borderPrimary}">Login</button>
                     </div>
                 </div>
             `;
@@ -569,38 +713,38 @@
         function renderRegister() {
             const t = getTheme();
             return `
-                <div class="max-w-3xl mx-auto py-12">
-                    <div class="text-center mb-16">
-                        <h2 class="text-6xl font-display font-bold ${t.textPrimary} mb-4">Create Account</h2>
-                        <p class="${t.textSecondary} text-xl">Join the circular economy network.</p>
+                <div class="max-w-2xl mx-auto py-10">
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl font-display font-bold ${t.textPrimary} mb-3">Create Account</h2>
+                        <p class="${t.textSecondary} text-lg">Join the circular economy network.</p>
                     </div>
-                    <form onsubmit="handleRegister(event)" class="space-y-12">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <form onsubmit="handleRegister(event)" class="space-y-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
-                                <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-2">Full Name</label>
+                                <label class="block text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-2">Full Name</label>
                                 <input type="text" id="regName" required>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-2">Email Address</label>
+                                <label class="block text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-2">Email Address</label>
                                 <input type="email" id="regEmail" required>
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
-                                <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-2">Phone Number</label>
+                                <label class="block text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-2">Phone Number</label>
                                 <input type="text" id="regPhone" required>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-2">Location (County)</label>
+                                <label class="block text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-2">Location (County)</label>
                                 <select id="regLocation" required>
                                     <option value="">Select County</option>
                                     ${state.counties.map(c => `<option value="${c}">${c}</option>`).join('')}
                                 </select>
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
-                                <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-2">Register As</label>
+                                <label class="block text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-2">Register As</label>
                                 <select id="regRole" required>
                                     <option value="">Select Role</option>
                                     <option value="producer">Waste Producer</option>
@@ -610,25 +754,40 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-2">Password</label>
+                                <label class="block text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-2">Password</label>
                                 <input type="password" id="regPassword" required>
                             </div>
                         </div>
-                        <div class="pt-6 space-y-6">
-                            <label class="flex items-center space-x-4 cursor-pointer">
-                                <input type="checkbox" required class="w-5 h-5 border-2 ${t.borderPrimary}">
-                                <span class="${t.textSecondary} text-sm font-bold uppercase tracking-widest">I agree to the Terms and Conditions</span>
-                            </label>
-                            <label class="flex items-center space-x-4 cursor-pointer">
-                                <input type="checkbox" class="w-5 h-5 border-2 ${t.borderPrimary}">
-                                <span class="${t.textSecondary} text-sm font-bold uppercase tracking-widest">Remember Me for future logins</span>
+                        <div class="pt-4 space-y-4">
+                            <div class="flex items-center space-x-3 cursor-pointer" onclick="toggleTC(event)">
+                                <input type="checkbox" id="tcCheckbox" class="w-4 h-4 border-2 ${t.borderPrimary} pointer-events-none" required>
+                                <span class="${t.textSecondary} text-xs font-bold uppercase tracking-widest hover:${t.textPrimary} transition-colors">I agree to the Terms and Conditions</span>
+                            </div>
+                            
+                            <!-- Expandable T&C Section -->
+                            <div id="tcScrollArea" class="hidden flex-col border border-stone-500/30 p-6 mt-4 relative">
+                                <div class="h-48 overflow-y-auto text-xs ${t.textSecondary} space-y-4 pr-4 mb-6 leading-relaxed">
+                                    <p class="font-bold text-sm ${t.textPrimary}">Terms and Conditions</p>
+                                    <p><strong>1. Acceptance of Terms:</strong> By accessing and using the Waste-to-Wealth platform, you agree to be bound by these Terms and Conditions.</p>
+                                    <p><strong>2. User Responsibilities:</strong> You agree to provide accurate information regarding waste deposits, product listings, and delivery details. Falsifying waste weight or contamination levels may result in account suspension.</p>
+                                    <p><strong>3. Transactions and Fees:</strong> All payments, including pickup fees and platform commissions (10%-15%), are final. The platform acts as a facilitator and retains the right to modify commission rates with prior notice.</p>
+                                    <p><strong>4. Dispute Resolution:</strong> Any disputes regarding waste quality or product delivery must be reported within 48 hours. The platform administration holds the final decision-making authority.</p>
+                                    <p><strong>5. Privacy Policy:</strong> Your data, including location and contact details, will be used solely for facilitating platform logistics and services in accordance with local data protection laws.</p>
+                                    <p><strong>6. Limitation of Liability:</strong> Waste-to-Wealth is not liable for indirect damages, crop failures, or logistical delays caused by third-party transporters.</p>
+                                </div>
+                                <button type="button" onclick="agreeTC()" class="bg-blue-600 text-white font-bold uppercase tracking-widest py-3 px-8 text-xs w-full sm:w-auto self-start hover:bg-blue-700 transition-colors">Agree</button>
+                            </div>
+
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 border-2 ${t.borderPrimary}">
+                                <span class="${t.textSecondary} text-xs font-bold uppercase tracking-widest">Remember Me for future logins</span>
                             </label>
                         </div>
-                        <div class="pt-10">
-                            <button type="submit" class="${t.btnClass} w-full py-6 text-base">Complete Registration</button>
+                        <div class="pt-8">
+                            <button type="submit" class="${t.btnClass} w-full py-4 text-sm">Complete Registration</button>
                         </div>
-                        <div class="text-center mt-10">
-                            <button type="button" onclick="router.navigate('login')" class="${t.textSecondary} text-sm font-bold uppercase tracking-widest border-b border-transparent hover:${t.borderPrimary} transition-colors">Already have an account? Login</button>
+                        <div class="text-center mt-8">
+                            <button type="button" onclick="router.navigate('login')" class="${t.textSecondary} text-xs font-bold uppercase tracking-widest border-b border-transparent hover:${t.borderPrimary} transition-colors">Already have an account? Login</button>
                         </div>
                     </form>
                 </div>
@@ -638,41 +797,31 @@
         function renderLogin() {
             const t = getTheme();
             return `
-                <div class="max-w-xl mx-auto py-20">
-                    <div class="text-center mb-16">
-                        <h2 class="text-6xl font-display font-bold ${t.textPrimary} mb-4">Welcome Back</h2>
-                        <p class="${t.textSecondary} text-xl">Login to access your dashboard.</p>
+                <div class="max-w-md mx-auto py-16">
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl font-display font-bold ${t.textPrimary} mb-3">Welcome Back</h2>
+                        <p class="${t.textSecondary} text-lg">Login to access your dashboard.</p>
                     </div>
-                    <form onsubmit="handleLogin(event)" class="space-y-12">
+                    <form onsubmit="handleLogin(event)" class="space-y-8">
                         <div>
-                            <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-2">Email Address</label>
+                            <label class="block text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-2">Email Address</label>
                             <input type="email" id="loginEmail" required>
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-2">Password</label>
+                            <label class="block text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-2">Password</label>
                             <input type="password" id="loginPassword" required>
                         </div>
-                        <div>
-                            <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-2">Login As (Demo Control)</label>
-                            <select id="loginRole" required>
-                                <option value="">Select Role</option>
-                                <option value="farmer">Farmer</option>
-                                <option value="producer">Producer</option>
-                                <option value="processor">Processor</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </div>
-                        <div class="pt-4">
-                            <label class="flex items-center space-x-4 cursor-pointer">
-                                <input type="checkbox" class="w-5 h-5">
-                                <span class="${t.textSecondary} text-sm font-bold uppercase tracking-widest">Remember Me</span>
+                        <div class="pt-2">
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4">
+                                <span class="${t.textSecondary} text-xs font-bold uppercase tracking-widest">Remember Me</span>
                             </label>
                         </div>
-                        <div class="pt-10">
-                            <button type="submit" class="${t.btnClass} w-full py-6 text-base">Sign In</button>
+                        <div class="pt-8">
+                            <button type="submit" class="${t.btnClass} w-full py-4 text-sm">Sign In</button>
                         </div>
-                        <div class="text-center mt-10">
-                            <button type="button" onclick="router.navigate('register')" class="${t.textSecondary} text-sm font-bold uppercase tracking-widest border-b border-transparent hover:${t.borderPrimary} transition-colors">Need an account? Register</button>
+                        <div class="text-center mt-8">
+                            <button type="button" onclick="router.navigate('register')" class="${t.textSecondary} text-xs font-bold uppercase tracking-widest border-b border-transparent hover:${t.borderPrimary} transition-colors">Need an account? Register</button>
                         </div>
                     </form>
                 </div>
@@ -686,42 +835,42 @@
             const totalRevenue = state.platformRevenue.pickupCommissions + state.platformRevenue.marketplaceCommissions + state.platformRevenue.trainingFees;
 
             return `
-                <div class="space-y-16">
-                    <div class="border-b-2 ${t.borderSecondary} pb-8">
-                        <div class="flex justify-between items-center mb-10">
-                            <h2 class="text-6xl font-display font-bold ${t.textPrimary}">System Overview</h2>
+                <div class="space-y-12">
+                    <div class="border-b-2 ${t.borderSecondary} pb-6">
+                        <div class="flex justify-between items-center mb-8">
+                            <h2 class="text-4xl font-display font-bold ${t.textPrimary}">System Overview</h2>
                             <span class="${t.textPrimary} text-xs font-bold tracking-widest uppercase"><i class="fa-solid fa-circle text-[8px] mr-2"></i>Live Status</span>
                         </div>
-                        <div class="flex space-x-12 overflow-x-auto w-full">
-                            <button onclick="router.setSubView('admin', 'metrics')" class="pb-4 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('metrics')}">Metrics & Financials</button>
-                            <button onclick="router.setSubView('admin', 'orders')" class="pb-4 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('orders')}">Order Approvals</button>
+                        <div class="flex space-x-10 overflow-x-auto w-full">
+                            <button onclick="router.setSubView('admin', 'metrics')" class="pb-3 text-xs font-bold uppercase tracking-widest whitespace-nowrap border-b-2 ${getTabClass('metrics')}">Metrics & Financials</button>
+                            <button onclick="router.setSubView('admin', 'orders')" class="pb-3 text-xs font-bold uppercase tracking-widest whitespace-nowrap border-b-2 ${getTabClass('orders')}">Order Approvals</button>
                         </div>
                     </div>
 
                     ${activeTab === 'metrics' ? `
-                        <div class="space-y-24">
+                        <div class="space-y-16">
                             <div>
-                                <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-10">Platform Revenue (Monetization)</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                                <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-8">Platform Revenue (Monetization)</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
                                     <div>
-                                        <p class="${t.textSecondary} text-xs font-bold uppercase tracking-widest mb-4">Total Revenue</p>
-                                        <h3 class="text-5xl font-bold ${t.textPrimary}">Ksh ${formatNum(totalRevenue)}</h3>
-                                        <p class="text-xs ${t.textPrimary} mt-6 font-bold uppercase tracking-widest pt-4 border-t-2 ${t.borderSecondary}"><i class="fa-solid fa-building-columns mr-3"></i>Routed to Bank</p>
+                                        <p class="${t.textSecondary} text-xs font-bold uppercase tracking-widest mb-3">Total Revenue</p>
+                                        <h3 class="text-4xl font-bold ${t.textPrimary}">Ksh ${formatNum(totalRevenue)}</h3>
+                                        <p class="text-xs ${t.textPrimary} mt-4 font-bold uppercase tracking-widest pt-3 border-t-2 ${t.borderSecondary}"><i class="fa-solid fa-building-columns mr-2"></i>Routed to Bank</p>
                                     </div>
                                     <div>
-                                        <p class="${t.textSecondary} text-xs font-bold uppercase tracking-widest mb-4">Pickup Commissions</p>
-                                        <h3 class="text-3xl font-bold ${t.textPrimary}">Ksh ${formatNum(state.platformRevenue.pickupCommissions)}</h3>
-                                        <p class="text-xs ${t.textSecondary} mt-6 pt-4 border-t-2 ${t.borderSecondary}">15% cut from fees</p>
+                                        <p class="${t.textSecondary} text-xs font-bold uppercase tracking-widest mb-3">Pickup Commissions</p>
+                                        <h3 class="text-2xl font-bold ${t.textPrimary}">Ksh ${formatNum(state.platformRevenue.pickupCommissions)}</h3>
+                                        <p class="text-xs ${t.textSecondary} mt-4 pt-3 border-t-2 ${t.borderSecondary}">15% cut from fees</p>
                                     </div>
                                     <div>
-                                        <p class="${t.textSecondary} text-xs font-bold uppercase tracking-widest mb-4">Marketplace Cut</p>
-                                        <h3 class="text-3xl font-bold ${t.textPrimary}">Ksh ${formatNum(state.platformRevenue.marketplaceCommissions)}</h3>
-                                        <p class="text-xs ${t.textSecondary} mt-6 pt-4 border-t-2 ${t.borderSecondary}">10% cut from sales</p>
+                                        <p class="${t.textSecondary} text-xs font-bold uppercase tracking-widest mb-3">Marketplace Cut</p>
+                                        <h3 class="text-2xl font-bold ${t.textPrimary}">Ksh ${formatNum(state.platformRevenue.marketplaceCommissions)}</h3>
+                                        <p class="text-xs ${t.textSecondary} mt-4 pt-3 border-t-2 ${t.borderSecondary}">10% cut from sales</p>
                                     </div>
                                     <div>
-                                        <p class="${t.textSecondary} text-xs font-bold uppercase tracking-widest mb-4">Academy Fees</p>
-                                        <h3 class="text-3xl font-bold ${t.textPrimary}">Ksh ${formatNum(state.platformRevenue.trainingFees)}</h3>
-                                        <p class="text-xs ${t.textSecondary} mt-6 pt-4 border-t-2 ${t.borderSecondary}">100% direct revenue</p>
+                                        <p class="${t.textSecondary} text-xs font-bold uppercase tracking-widest mb-3">Academy Fees</p>
+                                        <h3 class="text-2xl font-bold ${t.textPrimary}">Ksh ${formatNum(state.platformRevenue.trainingFees)}</h3>
+                                        <p class="text-xs ${t.textSecondary} mt-4 pt-3 border-t-2 ${t.borderSecondary}">100% direct revenue</p>
                                     </div>
                                 </div>
                             </div>
@@ -729,19 +878,19 @@
                             <hr class="${t.borderSecondary} border-2">
 
                             <div>
-                                <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-10">Ecosystem Impact</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                                <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-8">Ecosystem Impact</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
                                     <div>
-                                        <p class="${t.textSecondary} text-xs font-bold uppercase tracking-widest mb-4">Total Waste Collected</p>
-                                        <h3 class="text-5xl font-display font-bold ${t.textPrimary}">${formatNum(state.stats.totalWaste)} <span class="text-2xl opacity-50">kg</span></h3>
+                                        <p class="${t.textSecondary} text-xs font-bold uppercase tracking-widest mb-3">Total Waste Collected</p>
+                                        <h3 class="text-4xl font-display font-bold ${t.textPrimary}">${formatNum(state.stats.totalWaste)} <span class="text-xl opacity-50">kg</span></h3>
                                     </div>
                                     <div>
-                                        <p class="${t.textSecondary} text-xs font-bold uppercase tracking-widest mb-4">Fertilizer Produced</p>
-                                        <h3 class="text-5xl font-display font-bold ${t.textPrimary}">${formatNum(state.stats.fertilizerProduced)} <span class="text-2xl opacity-50">kg</span></h3>
+                                        <p class="${t.textSecondary} text-xs font-bold uppercase tracking-widest mb-3">Fertilizer Produced</p>
+                                        <h3 class="text-4xl font-display font-bold ${t.textPrimary}">${formatNum(state.stats.fertilizerProduced)} <span class="text-xl opacity-50">kg</span></h3>
                                     </div>
                                     <div>
-                                        <p class="${t.textSecondary} text-xs font-bold uppercase tracking-widest mb-4">Total CO₂ Saved</p>
-                                        <h3 class="text-5xl font-display font-bold ${t.textPrimary}">${formatNum(state.stats.co2Saved)} <span class="text-2xl opacity-50">kg</span></h3>
+                                        <p class="${t.textSecondary} text-xs font-bold uppercase tracking-widest mb-3">Total CO₂ Saved</p>
+                                        <h3 class="text-4xl font-display font-bold ${t.textPrimary}">${formatNum(state.stats.co2Saved)} <span class="text-xl opacity-50">kg</span></h3>
                                     </div>
                                 </div>
                             </div>
@@ -750,18 +899,18 @@
 
                     ${activeTab === 'orders' ? `
                         <div>
-                            <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-10">System Order Approvals</h3>
-                            <div class="space-y-12">
+                            <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-8">System Order Approvals</h3>
+                            <div class="space-y-8">
                                 ${state.adminOrders.map(order => `
-                                    <div class="pb-10 border-b-2 ${t.borderSecondary} flex flex-col md:flex-row justify-between items-start md:items-center">
+                                    <div class="pb-8 border-b-2 ${t.borderSecondary} flex flex-col md:flex-row justify-between items-start md:items-center">
                                         <div>
-                                            <p class="${t.textPrimary} font-bold text-2xl mb-2">Order ${order.id} — ${order.farmerName}</p>
-                                            <p class="${t.textSecondary} text-base">${order.details}</p>
-                                            <p class="text-lg font-bold ${t.textPrimary} mt-6">Value: Ksh ${formatNum(order.total)}</p>
+                                            <p class="${t.textPrimary} font-bold text-xl mb-1">Order ${order.id} — ${order.farmerName}</p>
+                                            <p class="${t.textSecondary} text-sm">${order.details}</p>
+                                            <p class="text-base font-bold ${t.textPrimary} mt-4">Value: Ksh ${formatNum(order.total)}</p>
                                         </div>
-                                        <div class="mt-8 md:mt-0 text-left md:text-right flex flex-col justify-between items-start md:items-end">
+                                        <div class="mt-6 md:mt-0 text-left md:text-right flex flex-col justify-between items-start md:items-end">
                                             <span class="text-xs font-bold uppercase tracking-widest ${t.textPrimary} border-b-2 ${t.borderPrimary} pb-1">${order.status}</span>
-                                            <p class="text-sm ${t.textSecondary} mt-6"><i class="fa-solid fa-robot mr-3"></i>${order.reason}</p>
+                                            <p class="text-xs ${t.textSecondary} mt-4"><i class="fa-solid fa-robot mr-2"></i>${order.reason}</p>
                                         </div>
                                     </div>
                                 `).join('')}
@@ -778,24 +927,24 @@
             const getTabClass = (tab) => activeTab === tab ? t.tabActive : t.tabInactive;
             
             return `
-                <div class="space-y-16">
-                    <div class="border-b-2 ${t.borderSecondary} pb-8">
-                        <h2 class="text-6xl font-display font-bold ${t.textPrimary} mb-10">Producer Dashboard</h2>
-                        <div class="flex space-x-12 overflow-x-auto w-full">
-                            <button onclick="router.setSubView('producer', 'log')" class="pb-4 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('log')}">Schedule Pickup</button>
-                            <button onclick="router.setSubView('producer', 'quality')" class="pb-4 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('quality')}">Quality Reports</button>
-                            <button onclick="router.setSubView('producer', 'academy')" class="pb-4 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('academy')}">W2W Academy</button>
+                <div class="space-y-12">
+                    <div class="border-b-2 ${t.borderSecondary} pb-6">
+                        <h2 class="text-4xl font-display font-bold ${t.textPrimary} mb-8">Producer Dashboard</h2>
+                        <div class="flex space-x-10 overflow-x-auto w-full">
+                            <button onclick="router.setSubView('producer', 'log')" class="pb-3 text-xs font-bold uppercase tracking-widest whitespace-nowrap border-b-2 ${getTabClass('log')}">Schedule Pickup</button>
+                            <button onclick="router.setSubView('producer', 'quality')" class="pb-3 text-xs font-bold uppercase tracking-widest whitespace-nowrap border-b-2 ${getTabClass('quality')}">Quality Reports</button>
+                            <button onclick="router.setSubView('producer', 'academy')" class="pb-3 text-xs font-bold uppercase tracking-widest whitespace-nowrap border-b-2 ${getTabClass('academy')}">W2W Academy</button>
                         </div>
                     </div>
                     
                     ${activeTab === 'log' ? `
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-24">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-20">
                             <div>
-                                <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-10">Schedule Waste Pickup</h3>
-                                <p class="text-base ${t.textSecondary} mb-12">A small pickup & processing fee applies. This helps maintain the logistics network and keeps the platform running.</p>
-                                <form onsubmit="handleWasteSubmit(event)" class="space-y-10">
+                                <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-8">Schedule Waste Pickup</h3>
+                                <p class="text-sm ${t.textSecondary} mb-10">A small pickup & processing fee applies. This helps maintain the logistics network and keeps the platform running.</p>
+                                <form onsubmit="handleWasteSubmit(event)" class="space-y-8">
                                     <div>
-                                        <label class="block text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-4">Waste Type</label>
+                                        <label class="block text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-3">Waste Type</label>
                                         <select id="wasteType">
                                             <option value="Food Scraps">Food Scraps</option>
                                             <option value="Green Waste">Green Waste</option>
@@ -803,14 +952,14 @@
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-4">County Location</label>
+                                        <label class="block text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-3">County Location</label>
                                         <select id="wasteLocation" required>
                                             <option value="">Select County</option>
                                             ${state.counties.map(c => `<option value="${c}">${c}</option>`).join('')}
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-4">Estimated Amount</label>
+                                        <label class="block text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-3">Estimated Amount</label>
                                         <select id="wasteAmount" required>
                                             <option value="">Select Range</option>
                                             <option value="10">Under 10 kg</option>
@@ -821,31 +970,31 @@
                                             <option value="1000">500+ kg</option>
                                         </select>
                                     </div>
-                                    <div class="pt-8">
-                                        <button class="${t.btnClass} w-full">Proceed to Payment</button>
+                                    <div class="pt-6">
+                                        <button class="${t.btnClass} w-full">Calculate Fee & Pay</button>
                                     </div>
                                 </form>
                             </div>
                             
-                            <div class="space-y-20 lg:pl-16 lg:border-l-2 ${t.borderSecondary}">
+                            <div class="space-y-16 lg:pl-12 lg:border-l-2 ${t.borderSecondary}">
                                 <div>
-                                    <p class="${t.textSecondary} text-xs font-bold uppercase tracking-widest mb-6">Total Credits Earned</p>
-                                    <h1 class="text-7xl font-display font-bold ${t.textPrimary}">${state.producer.credits} <span class="text-3xl ${t.textSecondary}">PTS</span></h1>
-                                    <button class="mt-8 border-b-2 ${t.borderPrimary} ${t.textPrimary} font-bold uppercase tracking-widest pb-1 text-sm">Redeem Points</button>
+                                    <p class="${t.textSecondary} text-xs font-bold uppercase tracking-widest mb-4">Total Credits Earned</p>
+                                    <h1 class="text-6xl font-display font-bold ${t.accentColor}">${state.producer.credits} <span class="text-2xl ${t.textSecondary}">PTS</span></h1>
+                                    <button class="mt-6 border-b-2 ${t.accentColor} ${t.accentColor} font-bold uppercase tracking-widest pb-1 text-xs hover:opacity-80 transition-opacity">Redeem Points</button>
                                 </div>
                                 
-                                <div class="pt-10 border-t-2 ${t.borderSecondary}">
-                                    <h4 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-10">Pickup Payments & Log</h4>
-                                    <div class="space-y-8">
+                                <div class="pt-8 border-t-2 ${t.borderSecondary}">
+                                    <h4 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-8">Pickup Payments & Log</h4>
+                                    <div class="space-y-6">
                                         ${state.producer.history.map(item => `
-                                            <div class="flex justify-between items-start border-b-2 ${t.borderSecondary} pb-8">
+                                            <div class="flex justify-between items-start border-b-2 ${t.borderSecondary} pb-6">
                                                 <div>
-                                                    <p class="${t.textPrimary} font-bold text-xl mb-2">${item.type} <span class="text-base font-normal ${t.textSecondary} ml-4">${item.amount}kg</span></p>
-                                                    <p class="text-sm ${t.textSecondary} uppercase tracking-widest">${item.date} • ${item.location}</p>
+                                                    <p class="${t.textPrimary} font-bold text-lg mb-1">${item.type} <span class="text-sm font-normal ${t.textSecondary} ml-3">${item.amount}kg</span></p>
+                                                    <p class="text-xs ${t.textSecondary} uppercase tracking-widest">${item.date} • ${item.location}</p>
                                                 </div>
                                                 <div class="text-right">
-                                                    <p class="${t.textPrimary} font-bold text-lg uppercase mb-2">Ksh ${item.pickupFee}</p>
-                                                    <p class="${t.textPrimary} font-bold text-sm uppercase tracking-widest">+${item.credits} PTS</p>
+                                                    <p class="${t.textPrimary} font-bold text-base uppercase mb-1">Ksh ${formatNum(item.pickupFee)}</p>
+                                                    <p class="${t.accentColor} font-bold text-xs uppercase tracking-widest">+${item.credits} PTS</p>
                                                 </div>
                                             </div>
                                         `).join('')}
@@ -856,28 +1005,28 @@
                     
                     ${activeTab === 'quality' ? `
                         <div>
-                            <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-12">Detailed Quality Analysis Logs</h3>
+                            <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-10">Detailed Quality Analysis Logs</h3>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left">
                                     <thead>
                                         <tr>
-                                            <th class="pb-6 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Batch ID</th>
-                                            <th class="pb-6 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Date</th>
-                                            <th class="pb-6 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Moisture</th>
-                                            <th class="pb-6 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Contam.</th>
-                                            <th class="pb-6 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Grade</th>
-                                            <th class="pb-6 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Notes</th>
+                                            <th class="pb-4 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Batch ID</th>
+                                            <th class="pb-4 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Date</th>
+                                            <th class="pb-4 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Moisture</th>
+                                            <th class="pb-4 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Contam.</th>
+                                            <th class="pb-4 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Grade</th>
+                                            <th class="pb-4 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Notes</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="text-base">
+                                    <tbody class="text-sm">
                                         ${state.producer.analysisLogs.map(log => `
                                             <tr>
-                                                <td class="py-8 border-b border-stone-900/10 ${t.textPrimary} font-mono font-bold text-lg">${log.batch}</td>
-                                                <td class="py-8 border-b border-stone-900/10 ${t.textSecondary}">${log.date}</td>
-                                                <td class="py-8 border-b border-stone-900/10 ${t.textPrimary} font-bold">${log.moisture}</td>
-                                                <td class="py-8 border-b border-stone-900/10 ${t.textPrimary} font-bold">${log.contam}</td>
-                                                <td class="py-8 border-b border-stone-900/10 ${t.textPrimary} font-bold text-xl">${log.grade}</td>
-                                                <td class="py-8 border-b border-stone-900/10 ${t.textSecondary} max-w-sm">${log.notes}</td>
+                                                <td class="py-6 border-b border-stone-900/10 ${t.textPrimary} font-mono font-bold text-base">${log.batch}</td>
+                                                <td class="py-6 border-b border-stone-900/10 ${t.textSecondary}">${log.date}</td>
+                                                <td class="py-6 border-b border-stone-900/10 ${t.textPrimary} font-bold">${log.moisture}</td>
+                                                <td class="py-6 border-b border-stone-900/10 ${t.textPrimary} font-bold">${log.contam}</td>
+                                                <td class="py-6 border-b border-stone-900/10 ${t.accentColor} font-bold text-lg">${log.grade}</td>
+                                                <td class="py-6 border-b border-stone-900/10 ${t.textSecondary} max-w-xs">${log.notes}</td>
                                             </tr>
                                         `).join('')}
                                     </tbody>
@@ -896,39 +1045,39 @@
             const getTabClass = (tab) => activeTab === tab ? t.tabActive : t.tabInactive;
 
             return `
-                <div class="space-y-16">
-                    <div class="border-b-2 ${t.borderSecondary} pb-8">
-                        <h2 class="text-6xl font-display font-bold ${t.textPrimary} mb-10">Processor Dashboard</h2>
-                        <div class="flex space-x-12 overflow-x-auto w-full">
-                            <button onclick="router.setSubView('processor', 'inventory')" class="pb-4 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('inventory')}">Raw Inventory</button>
-                            <button onclick="router.setSubView('processor', 'products')" class="pb-4 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('products')}">Market Products</button>
-                            <button onclick="router.setSubView('processor', 'ops')" class="pb-4 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('ops')}">Unit Operations</button>
-                            <button onclick="router.setSubView('processor', 'intake')" class="pb-4 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('intake')}">Intake Log</button>
+                <div class="space-y-12">
+                    <div class="border-b-2 ${t.borderSecondary} pb-6">
+                        <h2 class="text-4xl font-display font-bold ${t.textPrimary} mb-8">Processor Dashboard</h2>
+                        <div class="flex space-x-10 overflow-x-auto w-full">
+                            <button onclick="router.setSubView('processor', 'inventory')" class="pb-3 text-xs font-bold uppercase tracking-widest whitespace-nowrap border-b-2 ${getTabClass('inventory')}">Raw Inventory</button>
+                            <button onclick="router.setSubView('processor', 'products')" class="pb-3 text-xs font-bold uppercase tracking-widest whitespace-nowrap border-b-2 ${getTabClass('products')}">Market Products</button>
+                            <button onclick="router.setSubView('processor', 'ops')" class="pb-3 text-xs font-bold uppercase tracking-widest whitespace-nowrap border-b-2 ${getTabClass('ops')}">Unit Operations</button>
+                            <button onclick="router.setSubView('processor', 'intake')" class="pb-3 text-xs font-bold uppercase tracking-widest whitespace-nowrap border-b-2 ${getTabClass('intake')}">Intake Log</button>
                         </div>
                     </div>
 
                     ${activeTab === 'inventory' ? `
                         <div>
-                            <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-12">Raw Material Stock</h3>
+                            <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-10">Raw Material Stock</h3>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left">
                                     <thead>
                                         <tr>
-                                            <th class="pb-6 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Item ID</th>
-                                            <th class="pb-6 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Type</th>
-                                            <th class="pb-6 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Batch Ref</th>
-                                            <th class="pb-6 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Quantity</th>
-                                            <th class="pb-6 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Status</th>
+                                            <th class="pb-4 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Item ID</th>
+                                            <th class="pb-4 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Type</th>
+                                            <th class="pb-4 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Batch Ref</th>
+                                            <th class="pb-4 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Quantity</th>
+                                            <th class="pb-4 border-b-2 ${t.borderPrimary} text-xs font-bold uppercase tracking-widest ${t.textPrimary}">Status</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="text-base">
+                                    <tbody class="text-sm">
                                         ${state.processor.inventoryList.map(item => `
                                             <tr>
-                                                <td class="py-8 border-b-2 ${t.borderSecondary} font-mono ${t.textSecondary}">${item.id}</td>
-                                                <td class="py-8 border-b-2 ${t.borderSecondary} ${t.textPrimary} font-bold text-xl">${item.type}</td>
-                                                <td class="py-8 border-b-2 ${t.borderSecondary} ${t.textSecondary}">${item.batch}</td>
-                                                <td class="py-8 border-b-2 ${t.borderSecondary} ${t.textPrimary} font-bold text-2xl">${item.qty} ${item.unit}</td>
-                                                <td class="py-8 border-b-2 ${t.borderSecondary} ${t.textPrimary} uppercase text-sm font-bold tracking-widest">${item.status}</td>
+                                                <td class="py-6 border-b-2 ${t.borderSecondary} font-mono ${t.textSecondary}">${item.id}</td>
+                                                <td class="py-6 border-b-2 ${t.borderSecondary} ${t.textPrimary} font-bold text-lg">${item.type}</td>
+                                                <td class="py-6 border-b-2 ${t.borderSecondary} ${t.textSecondary}">${item.batch}</td>
+                                                <td class="py-6 border-b-2 ${t.borderSecondary} ${t.accentColor} font-bold text-xl">${item.qty} ${item.unit}</td>
+                                                <td class="py-6 border-b-2 ${t.borderSecondary} ${t.textPrimary} uppercase text-xs font-bold tracking-widest">${item.status}</td>
                                             </tr>
                                         `).join('')}
                                     </tbody>
@@ -939,33 +1088,33 @@
                     ${activeTab === 'products' ? `
                         <div>
                             <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-4">Manage Marketplace Products</h3>
-                            <p class="text-base ${t.textSecondary} mb-12">Update stock levels and product imagery. Changes instantly sync to the Farmer's Market.</p>
-                            <div class="space-y-12">
+                            <p class="text-sm ${t.textSecondary} mb-10">Update stock levels and product imagery. Changes instantly sync to the Farmer's Market.</p>
+                            <div class="space-y-10">
                                 ${state.market.map(prod => `
-                                    <div class="pb-12 border-b-2 ${t.borderSecondary}">
+                                    <div class="pb-10 border-b-2 ${t.borderSecondary}">
                                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
-                                            <div class="flex items-center space-x-8 mb-8 md:mb-0">
-                                                <div class="text-5xl ${t.textPrimary} w-16 text-center"><i class="fa-solid ${prod.icon}"></i></div>
+                                            <div class="flex items-center space-x-6 mb-6 md:mb-0">
+                                                <div class="text-4xl ${t.textPrimary} w-12 text-center"><i class="fa-solid ${prod.icon}"></i></div>
                                                 <div>
-                                                    <h4 class="font-bold ${t.textPrimary} text-3xl mb-2">${prod.name}</h4>
-                                                    <p class="text-sm ${t.textSecondary} uppercase tracking-widest">${prod.unit} • Ksh ${formatNum(prod.price)}</p>
+                                                    <h4 class="font-bold ${t.textPrimary} text-2xl mb-1">${prod.name}</h4>
+                                                    <p class="text-xs ${t.textSecondary} uppercase tracking-widest">${prod.unit} • Ksh ${formatNum(prod.price)}</p>
                                                 </div>
                                             </div>
-                                            <div class="flex items-end space-x-8 w-full md:w-auto">
+                                            <div class="flex items-end space-x-6 w-full md:w-auto">
                                                 <div class="text-left md:text-right">
                                                     <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-2">Stock Level</label>
-                                                    <input type="number" id="stock-edit-${prod.id}" value="${prod.stock}" class="w-32 text-2xl font-bold text-center text-stone-900 bg-stone-50" style="color: #1c1917;">
+                                                    <input type="number" id="stock-edit-${prod.id}" value="${prod.stock}" class="w-24 text-xl font-bold text-center ${t.textPrimary}">
                                                 </div>
                                                 <button onclick="updateProductStock(${prod.id})" class="${t.btnClass}">Save</button>
                                             </div>
                                         </div>
                                         
-                                        <div class="mt-8 pt-8 flex flex-col md:flex-row justify-between items-start md:items-center">
-                                            <div class="mb-6 md:mb-0 w-full md:w-auto">
-                                                <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-4">Upload Display Image</label>
-                                                <input type="file" accept="image/*" class="text-sm ${t.textPrimary} file:mr-6 file:py-2 file:px-6 file:border-0 file:text-xs file:font-bold file:bg-stone-50 file:text-stone-900 file:uppercase file:tracking-widest">
+                                        <div class="mt-6 pt-6 flex flex-col md:flex-row justify-between items-start md:items-center">
+                                            <div class="mb-4 md:mb-0 w-full md:w-auto">
+                                                <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-3">Upload Display Image</label>
+                                                <input type="file" accept="image/*" class="text-xs ${t.textPrimary} file:mr-4 file:py-2 file:px-4 file:border-0 file:text-[10px] file:font-bold file:uppercase file:tracking-widest ${t.isDark ? 'file:bg-stone-50 file:text-stone-900' : 'file:bg-stone-900 file:text-stone-50'}">
                                             </div>
-                                            <button onclick="showToast('Image uploaded successfully!', 'success')" class="${t.textPrimary} font-bold uppercase tracking-widest text-sm border-b-2 ${t.borderPrimary} pb-1">Upload Image</button>
+                                            <button onclick="showToast('Image uploaded successfully!', 'success')" class="${t.textPrimary} font-bold uppercase tracking-widest text-xs border-b-2 ${t.borderPrimary} pb-1">Upload</button>
                                         </div>
                                     </div>
                                 `).join('')}
@@ -974,15 +1123,15 @@
 
                     ${activeTab === 'ops' ? `
                         <div>
-                            <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-16">Unit Operations</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-20">
+                            <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-12">Unit Operations</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-16">
                                 ${state.processor.units.map(unit => `
                                     <div class="flex flex-col items-center">
-                                        <h4 class="${t.textPrimary} font-bold text-2xl mb-10 text-center">${unit.name}</h4>
-                                        <div class="w-full max-w-[250px] mb-10">${generateGauge(unit.progress)}</div>
-                                        <div class="text-center border-t-2 ${t.borderSecondary} pt-6 w-full">
-                                            <p class="${t.textSecondary} text-[10px] uppercase tracking-widest mb-3">Est. Completion</p>
-                                            <p class="text-3xl font-bold ${t.textPrimary}">${unit.daysLeft} Days</p>
+                                        <h4 class="${t.textPrimary} font-bold text-xl mb-8 text-center">${unit.name}</h4>
+                                        <div class="w-full max-w-[200px] mb-8">${generateGauge(unit.progress)}</div>
+                                        <div class="text-center border-t-2 ${t.borderSecondary} pt-4 w-full">
+                                            <p class="${t.textSecondary} text-[10px] uppercase tracking-widest mb-2">Est. Completion</p>
+                                            <p class="text-2xl font-bold ${t.textPrimary}">${unit.daysLeft} Days</p>
                                         </div>
                                     </div>
                                 `).join('')}
@@ -990,34 +1139,34 @@
                         </div>` : ''}
 
                     ${activeTab === 'intake' ? `
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-24">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-20">
                             <div>
-                                <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-12">Log New Intake Batch</h3>
-                                <form onsubmit="handleIntakeLog(event)" class="space-y-10">
+                                <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-10">Log New Intake Batch</h3>
+                                <form onsubmit="handleIntakeLog(event)" class="space-y-8">
                                     <div>
-                                        <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-4">Source ID</label>
+                                        <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-3">Source ID</label>
                                         <input type="text" id="intakeSource" required>
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-4">Net Weight (kg)</label>
+                                        <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-3">Net Weight (kg)</label>
                                         <input type="number" id="intakeWeight" required>
                                     </div>
-                                    <div class="pt-8">
+                                    <div class="pt-6">
                                         <button type="submit" class="${t.btnClass} w-full">Confirm Intake</button>
                                     </div>
                                 </form>
                             </div>
-                            <div class="pl-0 lg:pl-16 lg:border-l-2 ${t.borderSecondary}">
-                                <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-12">Daily Intake History</h3>
-                                <div class="space-y-8">
-                                    ${state.processor.intakeLog.length === 0 ? `<p class="${t.textSecondary} italic text-lg">No logs today.</p>` : ''}
+                            <div class="pl-0 lg:pl-12 lg:border-l-2 ${t.borderSecondary}">
+                                <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-10">Daily Intake History</h3>
+                                <div class="space-y-6">
+                                    ${state.processor.intakeLog.length === 0 ? `<p class="${t.textSecondary} italic text-sm">No logs today.</p>` : ''}
                                     ${state.processor.intakeLog.map(log => `
-                                        <div class="flex justify-between items-center pb-8 border-b-2 ${t.borderSecondary}">
+                                        <div class="flex justify-between items-center pb-6 border-b-2 ${t.borderSecondary}">
                                             <div>
-                                                <p class="${t.textPrimary} font-bold text-2xl mb-2">${log.source}</p>
-                                                <p class="text-sm ${t.textSecondary} uppercase tracking-widest">${log.time}</p>
+                                                <p class="${t.textPrimary} font-bold text-xl mb-1">${log.source}</p>
+                                                <p class="text-xs ${t.textSecondary} uppercase tracking-widest">${log.time}</p>
                                             </div>
-                                            <p class="text-4xl font-display font-bold ${t.textPrimary}">${log.weight}<span class="text-xl opacity-50">kg</span></p>
+                                            <p class="text-3xl font-display font-bold ${t.accentColor}">${log.weight}<span class="text-lg opacity-50">kg</span></p>
                                         </div>
                                     `).join('')}
                                 </div>
@@ -1031,22 +1180,22 @@
             const t = getTheme();
             return `
                 <div>
-                    <div class="mb-20 max-w-4xl">
-                        <h3 class="text-6xl font-display font-bold ${t.textPrimary} mb-8">W2W Training Academy</h3>
-                        <p class="${t.textSecondary} text-2xl leading-relaxed">Upgrade your skills. Book a professional training session and learn best practices in circular waste management and advanced agricultural techniques.</p>
+                    <div class="mb-16 max-w-3xl">
+                        <h3 class="text-5xl font-display font-bold ${t.textPrimary} mb-6">W2W Training Academy</h3>
+                        <p class="${t.textSecondary} text-xl leading-relaxed">Upgrade your skills. Book a professional training session and learn best practices in circular waste management and advanced agricultural techniques.</p>
                     </div>
-                    <div class="space-y-16">
+                    <div class="space-y-12">
                         ${state.academy.map(course => `
-                            <div class="pb-16 border-b-2 ${t.borderSecondary} flex flex-col md:flex-row justify-between md:items-start">
-                                <div class="flex space-x-10 items-start">
-                                    <div class="${t.textPrimary} text-5xl w-16 text-center mt-2"><i class="fa-solid ${course.icon}"></i></div>
+                            <div class="pb-12 border-b-2 ${t.borderSecondary} flex flex-col md:flex-row justify-between md:items-start">
+                                <div class="flex space-x-8 items-start">
+                                    <div class="${t.textPrimary} text-4xl w-12 text-center mt-1"><i class="fa-solid ${course.icon}"></i></div>
                                     <div>
-                                        <h4 class="${t.textPrimary} font-bold text-4xl mb-4 leading-tight">${course.title}</h4>
-                                        <p class="${t.textSecondary} text-sm font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-4"></i>${course.date}</p>
+                                        <h4 class="${t.textPrimary} font-bold text-3xl mb-3 leading-tight">${course.title}</h4>
+                                        <p class="${t.textSecondary} text-xs font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-3"></i>${course.date}</p>
                                     </div>
                                 </div>
-                                <div class="mt-10 md:mt-0 flex flex-col items-start md:items-end">
-                                    <span class="text-4xl font-bold ${t.textPrimary} mb-8">Ksh ${formatNum(course.fee)}</span>
+                                <div class="mt-8 md:mt-0 flex flex-col items-start md:items-end">
+                                    <span class="text-3xl font-bold ${t.accentColor} mb-6">Ksh ${formatNum(course.fee)}</span>
                                     <button onclick="bookTraining(${course.id})" class="${t.btnClass}">Book Now</button>
                                 </div>
                             </div>
@@ -1065,40 +1214,40 @@
             const total = subtotal + state.deliveryFee;
 
             return `
-                <div class="space-y-16">
-                    <div class="border-b-2 ${t.borderSecondary} pb-8 flex flex-col md:flex-row justify-between items-end">
+                <div class="space-y-12">
+                    <div class="border-b-2 ${t.borderSecondary} pb-6 flex flex-col md:flex-row justify-between items-end">
                         <div class="w-full">
-                            <h2 class="text-6xl font-display font-bold ${t.textPrimary} mb-10">Farmer Dashboard</h2>
-                            <div class="flex space-x-12 overflow-x-auto w-full">
-                                <button onclick="router.setSubView('farmer', 'market')" class="pb-4 text-sm font-bold uppercase tracking-widest whitespace-nowrap border-b-2 ${getTabClass('market')}">Marketplace</button>
-                                <button onclick="router.setSubView('farmer', 'orders')" class="pb-4 text-sm font-bold uppercase tracking-widest whitespace-nowrap border-b-2 ${getTabClass('orders')}">Orders & Tracking</button>
-                                <button onclick="router.setSubView('farmer', 'academy')" class="pb-4 text-sm font-bold uppercase tracking-widest whitespace-nowrap border-b-2 ${getTabClass('academy')}">Academy</button>
+                            <h2 class="text-4xl font-display font-bold ${t.textPrimary} mb-8">Farmer Dashboard</h2>
+                            <div class="flex space-x-10 overflow-x-auto w-full">
+                                <button onclick="router.setSubView('farmer', 'market')" class="pb-3 text-xs font-bold uppercase tracking-widest whitespace-nowrap border-b-2 ${getTabClass('market')}">Marketplace</button>
+                                <button onclick="router.setSubView('farmer', 'orders')" class="pb-3 text-xs font-bold uppercase tracking-widest whitespace-nowrap border-b-2 ${getTabClass('orders')}">Orders & Tracking</button>
+                                <button onclick="router.setSubView('farmer', 'academy')" class="pb-3 text-xs font-bold uppercase tracking-widest whitespace-nowrap border-b-2 ${getTabClass('academy')}">Academy</button>
                             </div>
                         </div>
-                        <button onclick="router.setSubView('farmer', 'cart')" class="mt-8 md:mt-0 pb-4 flex items-center ${t.textPrimary} border-b-2 border-transparent">
-                            <i class="fa-solid fa-cart-shopping mr-4 text-2xl"></i>
-                            <span class="font-bold text-base uppercase tracking-widest">Cart (${cartCount})</span>
+                        <button onclick="router.setSubView('farmer', 'cart')" class="mt-6 md:mt-0 pb-3 flex items-center ${t.textPrimary} border-b-2 border-transparent hover:${t.borderPrimary} transition-colors">
+                            <i class="fa-solid fa-cart-shopping mr-3 text-xl"></i>
+                            <span class="font-bold text-sm uppercase tracking-widest">Cart (${cartCount})</span>
                         </button>
                     </div>
 
                     ${activeTab === 'market' ? `
                         <div>
-                            <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-12">Agricultural Marketplace</h3>
-                            <div class="space-y-20">
+                            <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-10">Agricultural Marketplace</h3>
+                            <div class="space-y-16">
                                 ${state.market.map(product => `
-                                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-16 border-b-2 ${t.borderSecondary}">
-                                        <div class="flex space-x-10 items-center mb-10 md:mb-0">
-                                            <div class="text-6xl ${t.textPrimary} w-24 text-center"><i class="fa-solid ${product.icon}"></i></div>
+                                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-12 border-b-2 ${t.borderSecondary}">
+                                        <div class="flex space-x-8 items-center mb-8 md:mb-0">
+                                            <div class="text-5xl ${t.textPrimary} w-16 text-center"><i class="fa-solid ${product.icon}"></i></div>
                                             <div>
-                                                <h3 class="${t.textPrimary} font-bold text-4xl mb-4">${product.name}</h3>
-                                                <p class="${t.textSecondary} text-sm uppercase tracking-widest font-bold mb-6">${product.unit} <span class="mx-4 opacity-50">|</span> <span class="${t.textPrimary}">Stock: ${product.stock}</span></p>
-                                                <span class="text-3xl font-bold ${t.textPrimary}">Ksh ${formatNum(product.price)}</span>
+                                                <h3 class="${t.textPrimary} font-bold text-3xl mb-3">${product.name}</h3>
+                                                <p class="${t.textSecondary} text-xs uppercase tracking-widest font-bold mb-4">${product.unit} <span class="mx-3 opacity-50">|</span> <span class="${t.textPrimary}">Stock: ${product.stock}</span></p>
+                                                <span class="text-2xl font-bold ${t.accentColor}">Ksh ${formatNum(product.price)}</span>
                                             </div>
                                         </div>
-                                        <div class="flex items-end space-x-10">
+                                        <div class="flex items-end space-x-8">
                                             <div>
                                                 <label class="block text-[10px] ${t.textSecondary} uppercase font-bold tracking-widest mb-2">Qty</label>
-                                                <input type="number" id="qty-${product.id}" value="1" min="1" max="${product.stock}" class="w-24 text-center text-2xl font-bold">
+                                                <input type="number" id="qty-${product.id}" value="1" min="1" max="${product.stock}" class="w-20 text-center text-xl font-bold">
                                             </div>
                                             <button onclick="addToCart(${product.id})" ${product.stock === 0 ? 'disabled' : ''} class="${t.btnClass}">
                                                 ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
@@ -1110,19 +1259,19 @@
                         </div>` : ''}
 
                     ${activeTab === 'cart' ? `
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-24">
-                            <div class="space-y-16">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-20">
+                            <div class="space-y-12">
                                 <div>
-                                    <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-10">Your Shopping Cart</h3>
-                                    ${state.cart.length === 0 ? `<p class="${t.textSecondary} text-xl italic">Your cart is empty.</p>` : `
-                                        <div class="space-y-10">
+                                    <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-8">Your Shopping Cart</h3>
+                                    ${state.cart.length === 0 ? `<p class="${t.textSecondary} text-lg italic">Your cart is empty.</p>` : `
+                                        <div class="space-y-8">
                                             ${state.cart.map(item => `
-                                                <div class="flex justify-between items-center pb-8 border-b-2 ${t.borderSecondary}">
+                                                <div class="flex justify-between items-center pb-6 border-b-2 ${t.borderSecondary}">
                                                     <div>
-                                                        <h4 class="${t.textPrimary} font-bold text-2xl mb-2">${item.name}</h4>
-                                                        <p class="${t.textSecondary} text-lg">${item.qty} x Ksh ${formatNum(item.price)}</p>
+                                                        <h4 class="${t.textPrimary} font-bold text-xl mb-1">${item.name}</h4>
+                                                        <p class="${t.textSecondary} text-sm">${item.qty} x Ksh ${formatNum(item.price)}</p>
                                                     </div>
-                                                    <p class="${t.textPrimary} font-bold text-3xl">Ksh ${formatNum(item.qty * item.price)}</p>
+                                                    <p class="${t.accentColor} font-bold text-2xl">Ksh ${formatNum(item.qty * item.price)}</p>
                                                 </div>
                                             `).join('')}
                                         </div>
@@ -1130,34 +1279,34 @@
                                 </div>
                                 
                                 ${state.cart.length > 0 ? `
-                                    <div class="pt-10 border-t-2 ${t.borderSecondary}">
-                                        <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-10">Shipping Details</h3>
-                                        <form id="checkoutForm" class="space-y-10">
-                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                    <div class="pt-8 border-t-2 ${t.borderSecondary}">
+                                        <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-8">Shipping Details</h3>
+                                        <form id="checkoutForm" class="space-y-8">
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                                 <div>
-                                                    <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-4">Full Name</label>
+                                                    <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-3">Full Name</label>
                                                     <input type="text" id="checkoutName" required>
                                                 </div>
                                                 <div>
-                                                    <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-4">Phone Number</label>
+                                                    <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-3">Phone Number</label>
                                                     <input type="text" id="checkoutPhone" required>
                                                 </div>
                                             </div>
-                                            <div class="pt-6 border-t-2 ${t.borderSecondary}">
-                                                <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-8">Delivery Method</label>
-                                                <div class="flex flex-col space-y-8">
-                                                    <label class="flex items-center space-x-6 cursor-pointer">
-                                                        <input type="radio" name="deliveryType" value="pickup" checked onchange="updateDeliveryFee()" class="w-6 h-6 border-stone-900">
-                                                        <span class="${t.textPrimary} text-xl font-bold">Pick-up Point (Free)</span>
+                                            <div class="pt-4 border-t-2 ${t.borderSecondary}">
+                                                <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-6">Delivery Method</label>
+                                                <div class="flex flex-col space-y-6">
+                                                    <label class="flex items-center space-x-4 cursor-pointer">
+                                                        <input type="radio" name="deliveryType" value="pickup" checked onchange="updateDeliveryFee()" class="w-5 h-5">
+                                                        <span class="${t.textPrimary} text-lg font-bold">Pick-up Point (Free)</span>
                                                     </label>
-                                                    <label class="flex items-center space-x-6 cursor-pointer">
-                                                        <input type="radio" name="deliveryType" value="door" onchange="updateDeliveryFee()" class="w-6 h-6 border-stone-900">
-                                                        <span class="${t.textPrimary} text-xl font-bold">Door Delivery (+Ksh 1,000)</span>
+                                                    <label class="flex items-center space-x-4 cursor-pointer">
+                                                        <input type="radio" name="deliveryType" value="door" onchange="updateDeliveryFee()" class="w-5 h-5">
+                                                        <span class="${t.textPrimary} text-lg font-bold">Door Delivery (+Ksh 1,000)</span>
                                                     </label>
                                                 </div>
                                             </div>
-                                            <div id="locationField" class="pt-6 border-t-2 ${t.borderSecondary}">
-                                                <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-4">Delivery Location / Pick-up Station</label>
+                                            <div id="locationField" class="pt-4 border-t-2 ${t.borderSecondary}">
+                                                <label class="block text-[10px] font-bold ${t.textSecondary} uppercase tracking-widest mb-3">Delivery Location / Pick-up Station</label>
                                                 <input type="text" id="checkoutLocation">
                                             </div>
                                         </form>
@@ -1165,48 +1314,48 @@
                                 ` : ''}
                             </div>
 
-                            <div class="pl-0 lg:pl-20 lg:border-l-2 ${t.borderSecondary}">
-                                <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-10">Order Summary</h3>
-                                <div class="space-y-8 text-xl mb-16">
+                            <div class="pl-0 lg:pl-16 lg:border-l-2 ${t.borderSecondary}">
+                                <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-8">Order Summary</h3>
+                                <div class="space-y-6 text-lg mb-12">
                                     <div class="flex justify-between ${t.textSecondary}"><span>Subtotal</span><span>Ksh ${formatNum(subtotal)}</span></div>
                                     <div class="flex justify-between ${t.textSecondary}"><span>Delivery Fee</span><span>Ksh ${formatNum(state.deliveryFee)}</span></div>
-                                    <div class="flex justify-between ${t.textPrimary} font-bold text-4xl pt-10 border-t-2 ${t.borderSecondary} mt-10">
-                                        <span>Total</span><span>Ksh ${formatNum(total)}</span>
+                                    <div class="flex justify-between ${t.textPrimary} font-bold text-3xl pt-8 border-t-2 ${t.borderSecondary} mt-8">
+                                        <span>Total</span><span class="${t.accentColor}">Ksh ${formatNum(total)}</span>
                                     </div>
                                 </div>
-                                <div class="space-y-8">
-                                    <button onclick="checkout(event)" class="${t.btnClass} w-full py-6 text-base">Pay & Checkout</button>
-                                    <button onclick="router.setSubView('farmer', 'market')" class="w-full ${t.textSecondary} font-bold uppercase tracking-widest text-sm text-center py-4 border-2 ${t.borderSecondary}">Continue Shopping</button>
+                                <div class="space-y-6">
+                                    <button onclick="checkout(event)" class="${t.btnClass} w-full py-5">Proceed to Payment</button>
+                                    <button onclick="router.setSubView('farmer', 'market')" class="w-full ${t.textSecondary} font-bold uppercase tracking-widest text-xs text-center py-4 border-2 ${t.borderSecondary}">Continue Shopping</button>
                                 </div>
                             </div>
                         </div>` : ''}
 
                     ${activeTab === 'orders' ? `
                         <div>
-                            <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-12">Your Orders & Deliveries</h3>
-                            <div class="space-y-20">
+                            <h3 class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-10">Your Orders & Deliveries</h3>
+                            <div class="space-y-16">
                                 ${state.farmer.orders.map(o => `
-                                    <div class="pb-16 border-b-2 ${t.borderSecondary}">
-                                        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
+                                    <div class="pb-12 border-b-2 ${t.borderSecondary}">
+                                        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10">
                                             <div>
-                                                <h4 class="${t.textPrimary} font-bold text-4xl mb-4">${o.name}</h4>
-                                                <p class="text-sm ${t.textSecondary} uppercase tracking-widest">ID: <span class="font-bold ${t.textPrimary}">${o.id}</span> <span class="mx-4 opacity-50">|</span> Placed: ${o.date}</p>
+                                                <h4 class="${t.textPrimary} font-bold text-3xl mb-3">${o.name}</h4>
+                                                <p class="text-xs ${t.textSecondary} uppercase tracking-widest">ID: <span class="font-bold ${t.textPrimary}">${o.id}</span> <span class="mx-3 opacity-50">|</span> Placed: ${o.date}</p>
                                             </div>
-                                            <div class="mt-8 md:mt-0 text-left md:text-right">
-                                                <p class="${t.textPrimary} font-bold text-3xl mb-2">Ksh ${formatNum(o.total || 0)}</p>
-                                                <p class="${t.textSecondary} text-lg">Qty: ${o.qty || 1}</p>
+                                            <div class="mt-6 md:mt-0 text-left md:text-right">
+                                                <p class="${t.textPrimary} font-bold text-2xl mb-1">Ksh ${formatNum(o.total || 0)}</p>
+                                                <p class="${t.textSecondary} text-sm">Qty: ${o.qty || 1}</p>
                                             </div>
                                         </div>
                                         
                                         ${getTrackingUI(o)}
                                         
-                                        <div class="mt-16 pt-10 border-t-2 ${t.borderSecondary} flex flex-col md:flex-row justify-between items-start md:items-center">
-                                            <p class="text-sm font-bold ${t.textSecondary} uppercase tracking-widest mb-4 md:mb-0">Status: <span class="${t.textPrimary} text-base ml-4">${o.status}</span></p>
-                                            ${o.status !== 'Delivered' ? `<p class="text-sm ${t.textSecondary} uppercase tracking-widest">Est. Delivery: <span class="font-bold ${t.textPrimary} ml-4 text-base">${o.estDelivery}</span></p>` : `<p class="text-sm ${t.textPrimary} font-bold uppercase tracking-widest"><i class="fa-solid fa-check mr-3"></i>Order Complete</p>`}
+                                        <div class="mt-12 pt-8 border-t-2 ${t.borderSecondary} flex flex-col md:flex-row justify-between items-start md:items-center">
+                                            <p class="text-xs font-bold ${t.textSecondary} uppercase tracking-widest mb-3 md:mb-0">Status: <span class="${t.textPrimary} text-sm ml-3">${o.status}</span></p>
+                                            ${o.status !== 'Delivered' ? `<p class="text-xs ${t.textSecondary} uppercase tracking-widest">Est. Delivery: <span class="font-bold ${t.textPrimary} ml-3 text-sm">${o.estDelivery}</span></p>` : `<p class="text-xs ${t.textPrimary} font-bold uppercase tracking-widest"><i class="fa-solid fa-check mr-3"></i>Order Complete</p>`}
                                         </div>
                                     </div>
                                 `).join('')}
-                                ${state.farmer.orders.length === 0 ? `<p class="${t.textSecondary} text-xl italic">No orders yet.</p>` : ''}
+                                ${state.farmer.orders.length === 0 ? `<p class="${t.textSecondary} text-lg italic">No orders yet.</p>` : ''}
                             </div>
                         </div>` : ''}
 
@@ -1221,26 +1370,42 @@
             const t = getTheme();
 
             if (!state.currentUserRole) {
-                // Not logged in
                 desktopNav.innerHTML = `
-                    <button onclick="router.navigate('register')" class="text-sm font-bold uppercase tracking-widest ${t.textSecondary} hover:${t.textPrimary} transition-colors">Register</button>
-                    <button onclick="router.navigate('login')" class="text-sm font-bold uppercase tracking-widest ${t.textSecondary} hover:${t.textPrimary} transition-colors">Login</button>
+                    <button onclick="router.navigate('register')" class="text-xs font-bold uppercase tracking-widest ${t.textSecondary} transition-colors">Register</button>
+                    <button onclick="router.navigate('login')" class="text-xs font-bold uppercase tracking-widest ${t.textSecondary} transition-colors">Login</button>
                 `;
                 mobileNav.innerHTML = `
-                    <a onclick="router.navigate('register'); toggleMobileMenu()" class="block text-lg font-bold uppercase tracking-widest ${t.textPrimary} cursor-pointer">Register</a>
-                    <a onclick="router.navigate('login'); toggleMobileMenu()" class="block text-lg font-bold uppercase tracking-widest ${t.textPrimary} cursor-pointer">Login</a>
+                    <a onclick="router.navigate('register'); toggleMobileMenu()" class="block text-sm font-bold uppercase tracking-widest ${t.textPrimary} cursor-pointer">Register</a>
+                    <a onclick="router.navigate('login'); toggleMobileMenu()" class="block text-sm font-bold uppercase tracking-widest ${t.textPrimary} cursor-pointer">Login</a>
                 `;
             } else {
-                // Logged in
                 const role = state.currentUserRole;
-                desktopNav.innerHTML = `
-                    <button onclick="router.navigate('${role}')" class="text-sm font-bold uppercase tracking-widest border-b-2 ${state.currentView === role ? t.borderPrimary + ' ' + t.textPrimary : 'border-transparent ' + t.textSecondary}">${role} Dashboard</button>
-                    <button onclick="logout()" class="text-sm font-bold uppercase tracking-widest text-red-500 hover:text-red-400 ml-8">Logout</button>
-                `;
-                mobileNav.innerHTML = `
-                    <a onclick="router.navigate('${role}'); toggleMobileMenu()" class="block text-lg font-bold uppercase tracking-widest ${t.textPrimary} cursor-pointer">${role} Dashboard</a>
-                    <a onclick="logout(); toggleMobileMenu()" class="block text-lg font-bold uppercase tracking-widest text-red-500 cursor-pointer mt-8">Logout</a>
-                `;
+                
+                if (role === 'admin') {
+                    desktopNav.innerHTML = `
+                        <button onclick="router.navigate('admin')" class="nav-btn text-xs font-bold uppercase tracking-widest border-b-2 ${state.currentView === 'admin' ? t.borderPrimary + ' ' + t.textPrimary : 'border-transparent ' + t.textSecondary}">Admin</button>
+                        <button onclick="router.navigate('producer')" class="nav-btn text-xs font-bold uppercase tracking-widest border-b-2 ${state.currentView === 'producer' ? t.borderPrimary + ' ' + t.textPrimary : 'border-transparent ' + t.textSecondary}">Producer</button>
+                        <button onclick="router.navigate('processor')" class="nav-btn text-xs font-bold uppercase tracking-widest border-b-2 ${state.currentView === 'processor' ? t.borderPrimary + ' ' + t.textPrimary : 'border-transparent ' + t.textSecondary}">Processor</button>
+                        <button onclick="router.navigate('farmer')" class="nav-btn text-xs font-bold uppercase tracking-widest border-b-2 ${state.currentView === 'farmer' ? t.borderPrimary + ' ' + t.textPrimary : 'border-transparent ' + t.textSecondary}">Farmer</button>
+                        <button onclick="logout()" class="text-xs font-bold uppercase tracking-widest text-red-500 ml-6">Logout</button>
+                    `;
+                    mobileNav.innerHTML = `
+                        <a onclick="router.navigate('admin'); toggleMobileMenu()" class="block text-sm font-bold uppercase tracking-widest ${t.textPrimary} cursor-pointer">Admin</a>
+                        <a onclick="router.navigate('producer'); toggleMobileMenu()" class="block text-sm font-bold uppercase tracking-widest ${t.textPrimary} cursor-pointer">Producer</a>
+                        <a onclick="router.navigate('processor'); toggleMobileMenu()" class="block text-sm font-bold uppercase tracking-widest ${t.textPrimary} cursor-pointer">Processor</a>
+                        <a onclick="router.navigate('farmer'); toggleMobileMenu()" class="block text-sm font-bold uppercase tracking-widest ${t.textPrimary} cursor-pointer">Farmer</a>
+                        <a onclick="logout(); toggleMobileMenu()" class="block text-sm font-bold uppercase tracking-widest text-red-500 cursor-pointer mt-6">Logout</a>
+                    `;
+                } else {
+                    desktopNav.innerHTML = `
+                        <button onclick="router.navigate('${role}')" class="nav-btn text-xs font-bold uppercase tracking-widest border-b-2 border-transparent ${t.textPrimary}">${role} Dashboard</button>
+                        <button onclick="logout()" class="text-xs font-bold uppercase tracking-widest text-red-500 ml-6">Logout</button>
+                    `;
+                    mobileNav.innerHTML = `
+                        <a onclick="router.navigate('${role}'); toggleMobileMenu()" class="block text-sm font-bold uppercase tracking-widest ${t.textPrimary} cursor-pointer">${role} Dashboard</a>
+                        <a onclick="logout(); toggleMobileMenu()" class="block text-sm font-bold uppercase tracking-widest text-red-500 cursor-pointer mt-6">Logout</a>
+                    `;
+                }
             }
         }
 
@@ -1275,8 +1440,8 @@
                 body.style.color = '#f5f5f4';
                 nav.style.borderColor = 'rgba(255,255,255,0.1)';
                 menu.style.borderColor = 'rgba(255,255,255,0.1)';
-                navBrand.className = 'font-display text-2xl font-bold tracking-widest text-stone-50 uppercase';
-                navIcon.className = 'fa-solid fa-recycle text-3xl text-stone-50 mr-4';
+                navBrand.className = 'font-display text-xl font-bold tracking-widest text-stone-50 uppercase';
+                navIcon.className = 'fa-solid fa-recycle text-2xl text-stone-50 mr-3';
                 navMenuBtn.className = 'text-stone-50 focus:outline-none';
                 cursorStyle.innerHTML = '.cursor::after { color: #f5f5f4; }';
                 body.classList.add('dark-mode');
@@ -1284,14 +1449,13 @@
                 body.style.color = '#1c1917';
                 nav.style.borderColor = 'rgba(28,25,23,0.1)';
                 menu.style.borderColor = 'rgba(28,25,23,0.1)';
-                navBrand.className = 'font-display text-2xl font-bold tracking-widest text-stone-900 uppercase';
-                navIcon.className = 'fa-solid fa-recycle text-3xl text-stone-900 mr-4';
+                navBrand.className = 'font-display text-xl font-bold tracking-widest text-stone-900 uppercase';
+                navIcon.className = 'fa-solid fa-recycle text-2xl text-stone-900 mr-3';
                 navMenuBtn.className = 'text-stone-900 focus:outline-none';
                 cursorStyle.innerHTML = '.cursor::after { color: #16a34a; }';
                 body.classList.remove('dark-mode');
             }
 
-            // Always render nav dynamically based on auth
             renderNav();
 
             root.innerHTML = ''; 
