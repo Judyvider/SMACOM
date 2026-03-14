@@ -24,24 +24,14 @@
                     },
                     colors: {
                         stone: {
-                            50: '#ffffff',
                             100: '#f5f5f4',
                             200: '#e7e5e4',
                             300: '#d6d3d1',
+                            400: '#a8a29e',
+                            500: '#78716c',
                             600: '#57534e',
                             800: '#292524',
                             900: '#1c1917',
-                        },
-                        green: {
-                            600: '#16a34a',
-                            700: '#15803d',
-                            800: '#166534',
-                            900: '#14532d',
-                        },
-                        brown: {
-                            600: '#854d0e',
-                            700: '#713f12',
-                            800: '#57330e',
                         }
                     }
                 }
@@ -50,92 +40,106 @@
     </script>
     <style>
         body {
-            background-color: #ffffff;
             color: #1c1917;
             font-family: 'Inter', sans-serif;
+            transition: background-color 0.1s ease;
         }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #ffffff; }
-        ::-webkit-scrollbar-thumb { background: #d6d3d1; }
+        
+        /* Typography Cursor */
         .cursor::after {
             content: '|';
             animation: blink 1s step-start infinite;
-            color: #15803d;
+            color: #1c1917;
         }
         @keyframes blink { 50% { opacity: 0; } }
-        
-        .nav-tab-active {
-            border-bottom: 2px solid #15803d;
-            color: #15803d;
-        }
-        .nav-tab-inactive {
-            border-bottom: 2px solid transparent;
-            color: #57534e;
-        }
-        
-        /* Flat, borderless inputs */
+
+        /* Flat Inputs */
         input[type=text], input[type=number], select {
             border: none;
             background-color: transparent;
             padding: 12px 0;
             outline: none;
             border-radius: 0;
-            border-bottom: 2px solid #e7e5e4;
+            border-bottom: 2px solid rgba(28, 25, 23, 0.2);
             width: 100%;
             font-size: 1.125rem;
             color: #1c1917;
         }
         input[type=text]:focus, input[type=number]:focus, select:focus {
-            border-bottom: 2px solid #15803d;
+            border-bottom: 2px solid #1c1917;
         }
         input[type=number]::-webkit-inner-spin-button, 
         input[type=number]::-webkit-outer-spin-button { 
             -webkit-appearance: none; 
             margin: 0; 
         }
-        button {
-            border-radius: 0;
+
+        /* Flat Buttons & Navigation */
+        .primary-btn {
+            background-color: #1c1917;
+            color: #ffffff;
+            padding: 1rem 2rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            border: none;
+        }
+        .primary-btn:disabled {
+            background-color: rgba(28, 25, 23, 0.2);
+            color: rgba(28, 25, 23, 0.5);
+            cursor: not-allowed;
+        }
+        .nav-tab-active {
+            border-bottom: 3px solid #1c1917;
+            color: #1c1917;
+            font-weight: 700;
+        }
+        .nav-tab-inactive {
+            border-bottom: 3px solid transparent;
+            color: rgba(28, 25, 23, 0.6);
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col relative overflow-x-hidden">
 
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 bg-white border-b border-stone-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
+    <nav id="main-nav" class="fixed top-0 w-full z-50 transition-colors duration-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-b border-stone-900/20">
+            <div class="flex items-center justify-between h-24">
                 <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="router.navigate('landing')">
-                    <i class="fa-solid fa-recycle text-3xl text-green-800 mr-3"></i>
-                    <span class="font-display text-xl font-bold tracking-wider text-stone-900">W2W <span class="text-green-800">SYSTEM</span></span>
+                    <i class="fa-solid fa-recycle text-3xl text-stone-900 mr-4"></i>
+                    <span class="font-display text-2xl font-bold tracking-widest text-stone-900 uppercase">Waste <span class="font-light">To</span> Wealth</span>
                 </div>
                 
-                <div class="hidden md:flex space-x-8">
-                    <button onclick="router.navigate('admin')" class="nav-btn text-sm font-bold uppercase tracking-widest text-stone-600" data-role="admin">Admin</button>
-                    <button onclick="router.navigate('producer')" class="nav-btn text-sm font-bold uppercase tracking-widest text-stone-600" data-role="producer">Producer</button>
-                    <button onclick="router.navigate('processor')" class="nav-btn text-sm font-bold uppercase tracking-widest text-stone-600" data-role="processor">Processor</button>
-                    <button onclick="router.navigate('farmer')" class="nav-btn text-sm font-bold uppercase tracking-widest text-stone-600" data-role="farmer">Farmer</button>
+                <div class="hidden md:flex space-x-10">
+                    <button onclick="router.navigate('admin')" class="nav-btn text-sm font-bold uppercase tracking-widest text-stone-900" data-role="admin">Admin</button>
+                    <button onclick="router.navigate('producer')" class="nav-btn text-sm font-bold uppercase tracking-widest text-stone-900" data-role="producer">Producer</button>
+                    <button onclick="router.navigate('processor')" class="nav-btn text-sm font-bold uppercase tracking-widest text-stone-900" data-role="processor">Processor</button>
+                    <button onclick="router.navigate('farmer')" class="nav-btn text-sm font-bold uppercase tracking-widest text-stone-900" data-role="farmer">Farmer</button>
                 </div>
 
                 <div class="md:hidden">
                     <button onclick="toggleMobileMenu()" class="text-stone-900 focus:outline-none">
-                        <i class="fa-solid fa-bars text-2xl"></i>
+                        <i class="fa-solid fa-bars text-3xl"></i>
                     </button>
                 </div>
             </div>
         </div>
         
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-stone-200 absolute w-full">
-            <div class="px-6 py-4 space-y-4">
-                <a onclick="router.navigate('admin'); toggleMobileMenu()" class="block text-sm font-bold uppercase tracking-widest text-stone-900 cursor-pointer">Admin Dashboard</a>
-                <a onclick="router.navigate('producer'); toggleMobileMenu()" class="block text-sm font-bold uppercase tracking-widest text-stone-900 cursor-pointer">Producer Dashboard</a>
-                <a onclick="router.navigate('processor'); toggleMobileMenu()" class="block text-sm font-bold uppercase tracking-widest text-stone-900 cursor-pointer">Processor Dashboard</a>
-                <a onclick="router.navigate('farmer'); toggleMobileMenu()" class="block text-sm font-bold uppercase tracking-widest text-stone-900 cursor-pointer">Farmer Dashboard</a>
+        <div id="mobile-menu" class="hidden md:hidden border-b border-stone-900/20 w-full transition-colors duration-100">
+            <div class="px-6 py-6 space-y-6">
+                <a onclick="router.navigate('admin'); toggleMobileMenu()" class="block text-lg font-bold uppercase tracking-widest text-stone-900 cursor-pointer">Admin Dashboard</a>
+                <a onclick="router.navigate('producer'); toggleMobileMenu()" class="block text-lg font-bold uppercase tracking-widest text-stone-900 cursor-pointer">Producer Dashboard</a>
+                <a onclick="router.navigate('processor'); toggleMobileMenu()" class="block text-lg font-bold uppercase tracking-widest text-stone-900 cursor-pointer">Processor Dashboard</a>
+                <a onclick="router.navigate('farmer'); toggleMobileMenu()" class="block text-lg font-bold uppercase tracking-widest text-stone-900 cursor-pointer">Farmer Dashboard</a>
             </div>
         </div>
     </nav>
 
     <!-- Main Content Area -->
-    <main id="app-root" class="flex-grow pt-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full mb-20"></main>
+    <main id="app-root" class="flex-grow pt-40 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full mb-32"></main>
 
     <!-- Toast Notifications -->
     <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
@@ -205,16 +209,16 @@
                 ],
                 intakeLog: [],
                 units: [
-                    { id: 1, name: 'Digester A (Bio-Gas)', progress: 75, daysLeft: 5, color: '#16a34a' }, 
-                    { id: 2, name: 'Composter B (Aerobic)', progress: 45, daysLeft: 12, color: '#854d0e' },
-                    { id: 3, name: 'Digester C (Sludge)', progress: 90, daysLeft: 1, color: '#1c1917' } 
+                    { id: 1, name: 'Digester A (Bio-Gas)', progress: 75, daysLeft: 5 }, 
+                    { id: 2, name: 'Composter B (Aerobic)', progress: 45, daysLeft: 12 },
+                    { id: 3, name: 'Digester C (Sludge)', progress: 90, daysLeft: 1 } 
                 ]
             },
             market: [
-                { id: 1, name: 'Premium Organic Compost', price: 1500, unit: '50kg Bag', stock: 100, icon: 'fa-seedling', iconColor: 'text-green-800' },
-                { id: 2, name: 'Nutri-Rich Liquid Fertilizer', price: 2500, unit: '10L Drum', stock: 50, icon: 'fa-flask', iconColor: 'text-stone-800' },
-                { id: 3, name: 'Balanced Animal Feed', price: 4000, unit: '25kg Bag', stock: 80, icon: 'fa-cow', iconColor: 'text-brown-800' },
-                { id: 4, name: 'Bio-Char Soil Amendment', price: 3000, unit: '10kg Bag', stock: 25, icon: 'fa-fire-burner', iconColor: 'text-stone-900' }
+                { id: 1, name: 'Premium Organic Compost', price: 1500, unit: '50kg Bag', stock: 100, icon: 'fa-seedling' },
+                { id: 2, name: 'Nutri-Rich Liquid Fertilizer', price: 2500, unit: '10L Drum', stock: 50, icon: 'fa-flask' },
+                { id: 3, name: 'Balanced Animal Feed', price: 4000, unit: '25kg Bag', stock: 80, icon: 'fa-cow' },
+                { id: 4, name: 'Bio-Char Soil Amendment', price: 3000, unit: '10kg Bag', stock: 25, icon: 'fa-fire-burner' }
             ]
         };
 
@@ -225,11 +229,11 @@
                 window.scrollTo(0,0);
                 document.querySelectorAll('.nav-btn').forEach(btn => {
                     if(btn.dataset.role === view) {
-                        btn.classList.add('text-green-800');
                         btn.classList.remove('text-stone-600');
+                        btn.classList.add('text-stone-900', 'border-b-2', 'border-stone-900');
                     } else {
-                        btn.classList.remove('text-green-800');
                         btn.classList.add('text-stone-600');
+                        btn.classList.remove('text-stone-900', 'border-b-2', 'border-stone-900');
                     }
                 });
             },
@@ -242,21 +246,17 @@
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
-            const colors = type === 'success' ? 'border-green-800 text-green-900 bg-white' : (type === 'info' ? 'border-stone-800 text-stone-900 bg-white' : 'border-brown-800 text-brown-900 bg-white');
-            const icon = type === 'success' ? 'fa-circle-check' : (type === 'info' ? 'fa-circle-info' : 'fa-circle-exclamation');
             
-            toast.className = `px-6 py-4 border border-stone-200 border-l-4 ${colors} flex items-center min-w-[300px] mb-2`;
+            toast.className = `px-6 py-4 bg-stone-900 text-white flex items-center min-w-[300px] mb-2`;
             toast.innerHTML = `
-                <i class="fa-solid ${icon} text-xl mr-3"></i>
+                <i class="fa-solid ${type === 'success' ? 'fa-check' : 'fa-info-circle'} text-xl mr-4"></i>
                 <div>
-                    <h4 class="font-bold text-sm uppercase tracking-wide">${type}</h4>
-                    <p class="text-stone-600 text-sm">${message}</p>
+                    <h4 class="font-bold text-sm uppercase tracking-widest">${type}</h4>
+                    <p class="text-stone-300 text-sm mt-1">${message}</p>
                 </div>
             `;
             container.appendChild(toast);
-            setTimeout(() => {
-                toast.remove();
-            }, 4000);
+            setTimeout(() => { toast.remove(); }, 4000);
         }
 
         function formatNum(num) {
@@ -386,7 +386,7 @@
             showToast('Initiating payment method...', 'info');
             setTimeout(() => {
                 state.platformRevenue.trainingFees += course.fee;
-                showToast(`Payment received! Confirmation for ${course.title} sent via Email, SMS, and WhatsApp.`, 'success');
+                showToast(`Payment received! Confirmation sent via Email, SMS, & WhatsApp.`, 'success');
                 render();
             }, 2500);
         }
@@ -418,13 +418,13 @@
             }
         }
 
-        function generateGauge(percentage, color) {
+        function generateGauge(percentage) {
             const totalLen = 126;
             const strokeLen = (percentage / 100) * totalLen;
             return `
                 <svg viewBox="0 0 100 60" class="w-full h-auto">
-                    <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#e7e5e4" stroke-width="4" stroke-linecap="butt" />
-                    <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="${color}" stroke-width="4" stroke-linecap="butt" stroke-dasharray="${strokeLen} 1000" />
+                    <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="rgba(28,25,23,0.1)" stroke-width="4" stroke-linecap="butt" />
+                    <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#1c1917" stroke-width="4" stroke-linecap="butt" stroke-dasharray="${strokeLen} 1000" />
                     <text x="50" y="45" text-anchor="middle" font-size="16" font-weight="bold" fill="#1c1917">${percentage}%</text>
                 </svg>
             `;
@@ -439,26 +439,26 @@
             else if(order.status === 'Delivered') { progress = 100; isProcessing = true; isShipped = true; isDelivered = true; }
 
             return `
-                <div class="mt-8 mb-6 w-full max-w-2xl">
-                    <div class="relative flex items-center justify-between w-full px-2">
-                        <div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-px bg-stone-200 z-0"></div>
-                        <div class="absolute left-0 top-1/2 transform -translate-y-1/2 h-px bg-green-800 z-0" style="width: ${progress}%;"></div>
+                <div class="mt-12 mb-8 w-full max-w-3xl">
+                    <div class="relative flex items-center justify-between w-full">
+                        <div class="absolute left-0 top-4 w-full h-px bg-stone-900/20 z-0"></div>
+                        <div class="absolute left-0 top-4 h-px bg-stone-900 z-0" style="width: ${progress}%;"></div>
                         
-                        <div class="relative z-10 flex flex-col items-center bg-white px-2">
-                            <div class="text-green-800 text-lg"><i class="fa-solid fa-circle-check"></i></div>
-                            <span class="text-[10px] text-stone-900 font-bold mt-2 uppercase tracking-widest">Placed</span>
+                        <div class="relative z-10 flex flex-col items-center">
+                            <div class="text-2xl ${isProcessing ? 'text-stone-900' : 'text-stone-900'} bg-inherit px-2"><i class="fa-solid fa-check-circle"></i></div>
+                            <span class="text-xs font-bold mt-4 uppercase tracking-widest text-stone-900">Placed</span>
                         </div>
-                        <div class="relative z-10 flex flex-col items-center bg-white px-2">
-                            <div class="${isProcessing ? 'text-green-800' : 'text-stone-300'} text-lg"><i class="fa-solid fa-box"></i></div>
-                            <span class="text-[10px] ${isProcessing ? 'text-stone-900 font-bold' : 'text-stone-500'} mt-2 uppercase tracking-widest">Warehouse</span>
+                        <div class="relative z-10 flex flex-col items-center">
+                            <div class="text-2xl ${isProcessing ? 'text-stone-900' : 'text-stone-900/20'} bg-inherit px-2"><i class="fa-solid fa-box"></i></div>
+                            <span class="text-xs ${isProcessing ? 'font-bold text-stone-900' : 'text-stone-900/50'} mt-4 uppercase tracking-widest">Warehouse</span>
                         </div>
-                        <div class="relative z-10 flex flex-col items-center bg-white px-2">
-                            <div class="${isShipped ? 'text-green-800' : 'text-stone-300'} text-lg"><i class="fa-solid fa-truck"></i></div>
-                            <span class="text-[10px] ${isShipped ? 'text-stone-900 font-bold' : 'text-stone-500'} mt-2 uppercase tracking-widest">Shipped</span>
+                        <div class="relative z-10 flex flex-col items-center">
+                            <div class="text-2xl ${isShipped ? 'text-stone-900' : 'text-stone-900/20'} bg-inherit px-2"><i class="fa-solid fa-truck"></i></div>
+                            <span class="text-xs ${isShipped ? 'font-bold text-stone-900' : 'text-stone-900/50'} mt-4 uppercase tracking-widest">Shipped</span>
                         </div>
-                        <div class="relative z-10 flex flex-col items-center bg-white px-2">
-                            <div class="${isDelivered ? 'text-green-800' : 'text-stone-300'} text-lg"><i class="fa-solid fa-flag-checkered"></i></div>
-                            <span class="text-[10px] ${isDelivered ? 'text-stone-900 font-bold' : 'text-stone-500'} mt-2 uppercase tracking-widest">Delivered</span>
+                        <div class="relative z-10 flex flex-col items-center">
+                            <div class="text-2xl ${isDelivered ? 'text-stone-900' : 'text-stone-900/20'} bg-inherit px-2"><i class="fa-solid fa-flag-checkered"></i></div>
+                            <span class="text-xs ${isDelivered ? 'font-bold text-stone-900' : 'text-stone-900/50'} mt-4 uppercase tracking-widest">Delivered</span>
                         </div>
                     </div>
                 </div>
@@ -469,37 +469,37 @@
 
         function renderLanding() {
             return `
-                <div class="flex flex-col items-center justify-center min-h-[60vh] text-center py-12">
-                    <div class="space-y-4 max-w-3xl">
-                        <span class="text-green-800 text-xs font-bold tracking-widest uppercase border-b border-green-800 pb-1">Circular Economy V1.0</span>
-                        <h1 class="text-5xl md:text-7xl font-display font-bold text-stone-900 leading-tight mt-6">
-                            <span id="typewriter" class="text-green-800 cursor"></span>
+                <div class="flex flex-col min-h-[60vh] py-12">
+                    <div class="space-y-6 max-w-4xl">
+                        <span class="text-stone-900 text-xs font-bold tracking-widest uppercase border-b-2 border-stone-900 pb-2">Circular Economy V1.0</span>
+                        <h1 class="text-6xl md:text-8xl font-display font-bold text-stone-900 leading-tight mt-8">
+                            <span id="typewriter" class="text-stone-900 cursor"></span>
                         </h1>
-                        <p class="text-stone-600 text-lg md:text-xl max-w-2xl mx-auto pt-6 leading-relaxed">
+                        <p class="text-stone-800 text-xl md:text-2xl max-w-3xl pt-8 leading-relaxed">
                             A completely decentralized platform connecting producers, farmers, and processors to transform organic waste into valuable resources.
                         </p>
                     </div>
 
-                    <div class="flex flex-col md:flex-row gap-12 w-full max-w-5xl mt-24 text-left border-t border-stone-200 pt-12">
-                        <div class="flex-1 cursor-pointer" onclick="router.navigate('admin')">
-                            <div class="text-brown-700 text-3xl mb-4"><i class="fa-solid fa-chart-pie"></i></div>
-                            <h3 class="text-stone-900 font-bold text-lg uppercase tracking-widest mb-2">Admin</h3>
-                            <p class="text-sm text-stone-600">Oversee ecosystem & financials.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 w-full mt-32 border-t-2 border-stone-900/20 pt-16">
+                        <div class="cursor-pointer" onclick="router.navigate('admin')">
+                            <div class="text-stone-900 text-4xl mb-6"><i class="fa-solid fa-chart-pie"></i></div>
+                            <h3 class="text-stone-900 font-bold text-2xl uppercase tracking-widest mb-3">Admin</h3>
+                            <p class="text-base text-stone-700">Oversee ecosystem & financials.</p>
                         </div>
-                        <div class="flex-1 cursor-pointer" onclick="router.navigate('producer')">
-                            <div class="text-green-800 text-3xl mb-4"><i class="fa-solid fa-leaf"></i></div>
-                            <h3 class="text-stone-900 font-bold text-lg uppercase tracking-widest mb-2">Producer</h3>
-                            <p class="text-sm text-stone-600">Log waste, track quality & learn.</p>
+                        <div class="cursor-pointer" onclick="router.navigate('producer')">
+                            <div class="text-stone-900 text-4xl mb-6"><i class="fa-solid fa-leaf"></i></div>
+                            <h3 class="text-stone-900 font-bold text-2xl uppercase tracking-widest mb-3">Producer</h3>
+                            <p class="text-base text-stone-700">Log waste, track quality & learn.</p>
                         </div>
-                        <div class="flex-1 cursor-pointer" onclick="router.navigate('processor')">
-                            <div class="text-stone-800 text-3xl mb-4"><i class="fa-solid fa-gears"></i></div>
-                            <h3 class="text-stone-900 font-bold text-lg uppercase tracking-widest mb-2">Processor</h3>
-                            <p class="text-sm text-stone-600">Manage operations & products.</p>
+                        <div class="cursor-pointer" onclick="router.navigate('processor')">
+                            <div class="text-stone-900 text-4xl mb-6"><i class="fa-solid fa-gears"></i></div>
+                            <h3 class="text-stone-900 font-bold text-2xl uppercase tracking-widest mb-3">Processor</h3>
+                            <p class="text-base text-stone-700">Manage operations & products.</p>
                         </div>
-                        <div class="flex-1 cursor-pointer" onclick="router.navigate('farmer')">
-                            <div class="text-brown-800 text-3xl mb-4"><i class="fa-solid fa-basket-shopping"></i></div>
-                            <h3 class="text-stone-900 font-bold text-lg uppercase tracking-widest mb-2">Farmer</h3>
-                            <p class="text-sm text-stone-600">Buy products, track orders.</p>
+                        <div class="cursor-pointer" onclick="router.navigate('farmer')">
+                            <div class="text-stone-900 text-4xl mb-6"><i class="fa-solid fa-basket-shopping"></i></div>
+                            <h3 class="text-stone-900 font-bold text-2xl uppercase tracking-widest mb-3">Farmer</h3>
+                            <p class="text-base text-stone-700">Buy products, track orders.</p>
                         </div>
                     </div>
                 </div>
@@ -508,64 +508,66 @@
 
         function renderAdmin() {
             const activeTab = state.subViews.admin;
-            const getTabClass = (tab) => activeTab === tab ? 'text-green-800 border-b-2 border-green-800' : 'text-stone-500 border-b-2 border-transparent';
+            const getTabClass = (tab) => activeTab === tab ? 'nav-tab-active' : 'nav-tab-inactive';
             const totalRevenue = state.platformRevenue.pickupCommissions + state.platformRevenue.marketplaceCommissions + state.platformRevenue.trainingFees;
 
             return `
-                <div class="space-y-12">
-                    <div class="border-b border-stone-200 pb-8">
-                        <div class="flex justify-between items-center mb-8">
-                            <h2 class="text-5xl font-display font-bold text-stone-900">System Overview</h2>
-                            <span class="text-green-800 text-xs font-bold tracking-widest uppercase"><i class="fa-solid fa-circle text-[8px] mr-2"></i>Live Status</span>
+                <div class="space-y-16">
+                    <div class="border-b-2 border-stone-900/20 pb-8">
+                        <div class="flex justify-between items-center mb-10">
+                            <h2 class="text-6xl font-display font-bold text-stone-900">System Overview</h2>
+                            <span class="text-stone-900 text-xs font-bold tracking-widest uppercase"><i class="fa-solid fa-circle text-[8px] mr-2"></i>Live Status</span>
                         </div>
-                        <div class="flex space-x-8 overflow-x-auto w-full">
-                            <button onclick="router.setSubView('admin', 'metrics')" class="pb-3 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('metrics')}">Metrics & Financials</button>
-                            <button onclick="router.setSubView('admin', 'orders')" class="pb-3 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('orders')}">Order Approvals</button>
+                        <div class="flex space-x-12 overflow-x-auto w-full">
+                            <button onclick="router.setSubView('admin', 'metrics')" class="pb-4 text-sm uppercase tracking-widest whitespace-nowrap ${getTabClass('metrics')}">Metrics & Financials</button>
+                            <button onclick="router.setSubView('admin', 'orders')" class="pb-4 text-sm uppercase tracking-widest whitespace-nowrap ${getTabClass('orders')}">Order Approvals</button>
                         </div>
                     </div>
 
                     ${activeTab === 'metrics' ? `
-                        <div class="space-y-16">
+                        <div class="space-y-24">
                             <div>
-                                <h3 class="text-xs font-bold text-stone-500 uppercase tracking-widest mb-8">Platform Revenue (Monetization)</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                                <h3 class="text-xs font-bold text-stone-600 uppercase tracking-widest mb-10">Platform Revenue (Monetization)</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
                                     <div>
-                                        <p class="text-stone-500 text-xs font-bold uppercase mb-2">Total Revenue</p>
-                                        <h3 class="text-4xl font-bold text-green-800">Ksh ${formatNum(totalRevenue)}</h3>
-                                        <p class="text-xs text-stone-900 mt-4 font-bold uppercase tracking-widest border-t border-stone-200 pt-2"><i class="fa-solid fa-building-columns mr-2"></i>Routed to Bank</p>
+                                        <p class="text-stone-600 text-xs font-bold uppercase tracking-widest mb-4">Total Revenue</p>
+                                        <h3 class="text-5xl font-bold text-stone-900">Ksh ${formatNum(totalRevenue)}</h3>
+                                        <p class="text-xs text-stone-900 mt-6 font-bold uppercase tracking-widest pt-4 border-t-2 border-stone-900/20"><i class="fa-solid fa-building-columns mr-3"></i>Routed to Bank</p>
                                     </div>
                                     <div>
-                                        <p class="text-stone-500 text-xs font-bold uppercase mb-2">Pickup Commissions</p>
-                                        <h3 class="text-2xl font-bold text-stone-900">Ksh ${formatNum(state.platformRevenue.pickupCommissions)}</h3>
-                                        <p class="text-xs text-stone-500 mt-4 border-t border-stone-200 pt-2">15% cut from fees</p>
+                                        <p class="text-stone-600 text-xs font-bold uppercase tracking-widest mb-4">Pickup Commissions</p>
+                                        <h3 class="text-3xl font-bold text-stone-900">Ksh ${formatNum(state.platformRevenue.pickupCommissions)}</h3>
+                                        <p class="text-xs text-stone-600 mt-6 pt-4 border-t-2 border-stone-900/20">15% cut from fees</p>
                                     </div>
                                     <div>
-                                        <p class="text-stone-500 text-xs font-bold uppercase mb-2">Marketplace Cut</p>
-                                        <h3 class="text-2xl font-bold text-stone-900">Ksh ${formatNum(state.platformRevenue.marketplaceCommissions)}</h3>
-                                        <p class="text-xs text-stone-500 mt-4 border-t border-stone-200 pt-2">10% cut from sales</p>
+                                        <p class="text-stone-600 text-xs font-bold uppercase tracking-widest mb-4">Marketplace Cut</p>
+                                        <h3 class="text-3xl font-bold text-stone-900">Ksh ${formatNum(state.platformRevenue.marketplaceCommissions)}</h3>
+                                        <p class="text-xs text-stone-600 mt-6 pt-4 border-t-2 border-stone-900/20">10% cut from sales</p>
                                     </div>
                                     <div>
-                                        <p class="text-stone-500 text-xs font-bold uppercase mb-2">Academy Fees</p>
-                                        <h3 class="text-2xl font-bold text-stone-900">Ksh ${formatNum(state.platformRevenue.trainingFees)}</h3>
-                                        <p class="text-xs text-stone-500 mt-4 border-t border-stone-200 pt-2">100% direct revenue</p>
+                                        <p class="text-stone-600 text-xs font-bold uppercase tracking-widest mb-4">Academy Fees</p>
+                                        <h3 class="text-3xl font-bold text-stone-900">Ksh ${formatNum(state.platformRevenue.trainingFees)}</h3>
+                                        <p class="text-xs text-stone-600 mt-6 pt-4 border-t-2 border-stone-900/20">100% direct revenue</p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="border-t border-stone-200 pt-12">
-                                <h3 class="text-xs font-bold text-stone-500 uppercase tracking-widest mb-8">Ecosystem Impact</h3>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <hr class="border-stone-900/20 border-2">
+
+                            <div>
+                                <h3 class="text-xs font-bold text-stone-600 uppercase tracking-widest mb-10">Ecosystem Impact</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
                                     <div>
-                                        <p class="text-stone-500 text-xs font-bold uppercase mb-2">Total Waste Collected</p>
-                                        <h3 class="text-4xl font-display font-bold text-stone-900">${formatNum(state.stats.totalWaste)} <span class="text-lg text-stone-400">kg</span></h3>
+                                        <p class="text-stone-600 text-xs font-bold uppercase tracking-widest mb-4">Total Waste Collected</p>
+                                        <h3 class="text-5xl font-display font-bold text-stone-900">${formatNum(state.stats.totalWaste)} <span class="text-2xl text-stone-500">kg</span></h3>
                                     </div>
                                     <div>
-                                        <p class="text-stone-500 text-xs font-bold uppercase mb-2">Fertilizer Produced</p>
-                                        <h3 class="text-4xl font-display font-bold text-stone-900">${formatNum(state.stats.fertilizerProduced)} <span class="text-lg text-stone-400">kg</span></h3>
+                                        <p class="text-stone-600 text-xs font-bold uppercase tracking-widest mb-4">Fertilizer Produced</p>
+                                        <h3 class="text-5xl font-display font-bold text-stone-900">${formatNum(state.stats.fertilizerProduced)} <span class="text-2xl text-stone-500">kg</span></h3>
                                     </div>
                                     <div>
-                                        <p class="text-stone-500 text-xs font-bold uppercase mb-2">Total CO₂ Saved</p>
-                                        <h3 class="text-4xl font-display font-bold text-stone-900">${formatNum(state.stats.co2Saved)} <span class="text-lg text-stone-400">kg</span></h3>
+                                        <p class="text-stone-600 text-xs font-bold uppercase tracking-widest mb-4">Total CO₂ Saved</p>
+                                        <h3 class="text-5xl font-display font-bold text-stone-900">${formatNum(state.stats.co2Saved)} <span class="text-2xl text-stone-500">kg</span></h3>
                                     </div>
                                 </div>
                             </div>
@@ -574,18 +576,18 @@
 
                     ${activeTab === 'orders' ? `
                         <div>
-                            <h3 class="text-xs font-bold text-stone-500 uppercase tracking-widest mb-8">System Order Approvals</h3>
-                            <div class="space-y-8">
+                            <h3 class="text-xs font-bold text-stone-600 uppercase tracking-widest mb-10">System Order Approvals</h3>
+                            <div class="space-y-12">
                                 ${state.adminOrders.map(order => `
-                                    <div class="pb-8 border-b border-stone-200 flex flex-col md:flex-row justify-between items-start md:items-center">
+                                    <div class="pb-10 border-b-2 border-stone-900/20 flex flex-col md:flex-row justify-between items-start md:items-center">
                                         <div>
-                                            <p class="text-stone-900 font-bold text-xl">Order ${order.id} — ${order.farmerName}</p>
-                                            <p class="text-stone-600 text-sm mt-2">${order.details}</p>
-                                            <p class="text-sm font-bold text-stone-800 mt-4">Value: Ksh ${formatNum(order.total)}</p>
+                                            <p class="text-stone-900 font-bold text-2xl mb-2">Order ${order.id} — ${order.farmerName}</p>
+                                            <p class="text-stone-600 text-base">${order.details}</p>
+                                            <p class="text-lg font-bold text-stone-900 mt-6">Value: Ksh ${formatNum(order.total)}</p>
                                         </div>
-                                        <div class="mt-6 md:mt-0 text-left md:text-right flex flex-col justify-between items-start md:items-end">
-                                            <span class="text-xs font-bold uppercase tracking-widest text-green-800">${order.status}</span>
-                                            <p class="text-xs text-stone-500 mt-2 border-t border-stone-200 pt-2"><i class="fa-solid fa-robot mr-2"></i>${order.reason}</p>
+                                        <div class="mt-8 md:mt-0 text-left md:text-right flex flex-col justify-between items-start md:items-end">
+                                            <span class="text-xs font-bold uppercase tracking-widest text-stone-900 border-b-2 border-stone-900 pb-1">${order.status}</span>
+                                            <p class="text-sm text-stone-600 mt-6"><i class="fa-solid fa-robot mr-3"></i>${order.reason}</p>
                                         </div>
                                     </div>
                                 `).join('')}
@@ -598,41 +600,41 @@
 
         function renderProducer() {
             const activeTab = state.subViews.producer;
-            const getTabClass = (tab) => activeTab === tab ? 'text-green-800 border-b-2 border-green-800' : 'text-stone-500 border-b-2 border-transparent';
+            const getTabClass = (tab) => activeTab === tab ? 'nav-tab-active' : 'nav-tab-inactive';
             
             return `
-                <div class="space-y-12">
-                    <div class="border-b border-stone-200 pb-8">
-                        <h2 class="text-5xl font-display font-bold text-stone-900 mb-8">Producer Dashboard</h2>
-                        <div class="flex space-x-8 overflow-x-auto w-full">
-                            <button onclick="router.setSubView('producer', 'log')" class="pb-3 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('log')}">Schedule Pickup</button>
-                            <button onclick="router.setSubView('producer', 'quality')" class="pb-3 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('quality')}">Quality Reports</button>
-                            <button onclick="router.setSubView('producer', 'academy')" class="pb-3 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('academy')}">W2W Academy</button>
+                <div class="space-y-16">
+                    <div class="border-b-2 border-stone-900/20 pb-8">
+                        <h2 class="text-6xl font-display font-bold text-stone-900 mb-10">Producer Dashboard</h2>
+                        <div class="flex space-x-12 overflow-x-auto w-full">
+                            <button onclick="router.setSubView('producer', 'log')" class="pb-4 text-sm uppercase tracking-widest whitespace-nowrap ${getTabClass('log')}">Schedule Pickup</button>
+                            <button onclick="router.setSubView('producer', 'quality')" class="pb-4 text-sm uppercase tracking-widest whitespace-nowrap ${getTabClass('quality')}">Quality Reports</button>
+                            <button onclick="router.setSubView('producer', 'academy')" class="pb-4 text-sm uppercase tracking-widest whitespace-nowrap ${getTabClass('academy')}">W2W Academy</button>
                         </div>
                     </div>
                     
                     ${activeTab === 'log' ? `
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-24">
                             <div>
-                                <h3 class="text-xs font-bold text-stone-500 uppercase tracking-widest mb-8">Schedule Waste Pickup</h3>
-                                <p class="text-sm text-stone-600 mb-10 pb-4 border-b border-stone-200">A small pickup & processing fee applies. This helps maintain the logistics network and keeps the platform running.</p>
-                                <form onsubmit="handleWasteSubmit(event)" class="space-y-8">
+                                <h3 class="text-xs font-bold text-stone-600 uppercase tracking-widest mb-10">Schedule Waste Pickup</h3>
+                                <p class="text-base text-stone-700 mb-12">A small pickup & processing fee applies. This helps maintain the logistics network and keeps the platform running.</p>
+                                <form onsubmit="handleWasteSubmit(event)" class="space-y-10">
                                     <div>
-                                        <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-2">Waste Type</label>
-                                        <select id="wasteType" class="w-full">
+                                        <label class="block text-xs font-bold text-stone-600 uppercase tracking-widest mb-4">Waste Type</label>
+                                        <select id="wasteType">
                                             <option>Food Scraps</option><option>Green Waste</option><option>Animal Manure</option>
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-2">County Location</label>
-                                        <select id="wasteLocation" class="w-full" required>
+                                        <label class="block text-xs font-bold text-stone-600 uppercase tracking-widest mb-4">County Location</label>
+                                        <select id="wasteLocation" required>
                                             <option value="">Select County</option>
                                             ${state.counties.map(c => `<option value="${c}">${c}</option>`).join('')}
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-2">Estimated Amount</label>
-                                        <select id="wasteAmount" class="w-full" required>
+                                        <label class="block text-xs font-bold text-stone-600 uppercase tracking-widest mb-4">Estimated Amount</label>
+                                        <select id="wasteAmount" required>
                                             <option value="">Select Range</option>
                                             <option value="10">Under 10 kg</option>
                                             <option value="50">10 - 50 kg</option>
@@ -642,31 +644,31 @@
                                             <option value="1000">500+ kg</option>
                                         </select>
                                     </div>
-                                    <div class="pt-6">
-                                        <button class="bg-stone-900 text-white font-bold py-4 px-8 uppercase tracking-widest text-xs">Proceed to Payment</button>
+                                    <div class="pt-8">
+                                        <button class="primary-btn w-full">Proceed to Payment</button>
                                     </div>
                                 </form>
                             </div>
                             
-                            <div class="space-y-12 pl-0 lg:pl-16 lg:border-l border-stone-200">
+                            <div class="space-y-20">
                                 <div>
-                                    <p class="text-stone-500 text-xs font-bold uppercase tracking-widest mb-4">Total Credits Earned</p>
-                                    <h1 class="text-6xl font-display font-bold text-green-800">${state.producer.credits} <span class="text-xl text-stone-400">PTS</span></h1>
-                                    <button class="mt-6 border-b border-stone-900 text-stone-900 font-bold uppercase tracking-widest pb-1 text-xs">Redeem Points</button>
+                                    <p class="text-stone-600 text-xs font-bold uppercase tracking-widest mb-6">Total Credits Earned</p>
+                                    <h1 class="text-7xl font-display font-bold text-stone-900">${state.producer.credits} <span class="text-3xl text-stone-500">PTS</span></h1>
+                                    <button class="mt-8 border-b-2 border-stone-900 text-stone-900 font-bold uppercase tracking-widest pb-1 text-sm">Redeem Points</button>
                                 </div>
                                 
-                                <div class="pt-10 border-t border-stone-200">
-                                    <h4 class="text-xs font-bold text-stone-500 uppercase tracking-widest mb-8">Pickup Payments & Log</h4>
-                                    <div class="space-y-6">
+                                <div>
+                                    <h4 class="text-xs font-bold text-stone-600 uppercase tracking-widest mb-10">Pickup Payments & Log</h4>
+                                    <div class="space-y-8">
                                         ${state.producer.history.map(item => `
-                                            <div class="flex justify-between items-start border-b border-stone-200 pb-6">
+                                            <div class="flex justify-between items-start border-b-2 border-stone-900/10 pb-8">
                                                 <div>
-                                                    <p class="text-stone-900 font-bold text-lg">${item.type} <span class="text-sm font-normal text-stone-500 ml-2">${item.amount}kg</span></p>
-                                                    <p class="text-sm text-stone-500 mt-2">${item.date} • ${item.location}</p>
+                                                    <p class="text-stone-900 font-bold text-xl mb-2">${item.type} <span class="text-base font-normal text-stone-600 ml-4">${item.amount}kg</span></p>
+                                                    <p class="text-sm text-stone-600 uppercase tracking-widest">${item.date} • ${item.location}</p>
                                                 </div>
                                                 <div class="text-right">
-                                                    <p class="text-stone-900 font-bold text-sm uppercase">Ksh ${item.pickupFee}</p>
-                                                    <p class="text-green-800 font-bold text-xs mt-2 uppercase tracking-widest">+${item.credits} PTS</p>
+                                                    <p class="text-stone-900 font-bold text-lg uppercase mb-2">Ksh ${item.pickupFee}</p>
+                                                    <p class="text-stone-900 font-bold text-sm uppercase tracking-widest">+${item.credits} PTS</p>
                                                 </div>
                                             </div>
                                         `).join('')}
@@ -677,28 +679,28 @@
                     
                     ${activeTab === 'quality' ? `
                         <div>
-                            <h3 class="text-xs font-bold text-stone-500 uppercase tracking-widest mb-8">Detailed Quality Analysis Logs</h3>
+                            <h3 class="text-xs font-bold text-stone-600 uppercase tracking-widest mb-12">Detailed Quality Analysis Logs</h3>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left">
-                                    <thead class="border-b-2 border-stone-900 text-stone-900">
+                                    <thead>
                                         <tr>
-                                            <th class="py-4 text-xs font-bold uppercase tracking-widest">Batch ID</th>
-                                            <th class="py-4 text-xs font-bold uppercase tracking-widest">Date</th>
-                                            <th class="py-4 text-xs font-bold uppercase tracking-widest">Moisture</th>
-                                            <th class="py-4 text-xs font-bold uppercase tracking-widest">Contam.</th>
-                                            <th class="py-4 text-xs font-bold uppercase tracking-widest">Grade</th>
-                                            <th class="py-4 text-xs font-bold uppercase tracking-widest">Notes</th>
+                                            <th class="pb-6 border-b-2 border-stone-900 text-xs font-bold uppercase tracking-widest text-stone-900">Batch ID</th>
+                                            <th class="pb-6 border-b-2 border-stone-900 text-xs font-bold uppercase tracking-widest text-stone-900">Date</th>
+                                            <th class="pb-6 border-b-2 border-stone-900 text-xs font-bold uppercase tracking-widest text-stone-900">Moisture</th>
+                                            <th class="pb-6 border-b-2 border-stone-900 text-xs font-bold uppercase tracking-widest text-stone-900">Contam.</th>
+                                            <th class="pb-6 border-b-2 border-stone-900 text-xs font-bold uppercase tracking-widest text-stone-900">Grade</th>
+                                            <th class="pb-6 border-b-2 border-stone-900 text-xs font-bold uppercase tracking-widest text-stone-900">Notes</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-stone-200 text-sm">
+                                    <tbody class="text-base">
                                         ${state.producer.analysisLogs.map(log => `
                                             <tr>
-                                                <td class="py-6 text-stone-900 font-mono font-bold">${log.batch}</td>
-                                                <td class="py-6 text-stone-600">${log.date}</td>
-                                                <td class="py-6 text-stone-900 font-bold">${log.moisture}</td>
-                                                <td class="py-6 text-stone-900 font-bold">${log.contam}</td>
-                                                <td class="py-6 text-green-800 font-bold text-lg">${log.grade}</td>
-                                                <td class="py-6 text-stone-600 text-sm max-w-xs">${log.notes}</td>
+                                                <td class="py-8 border-b border-stone-900/10 text-stone-900 font-mono font-bold text-lg">${log.batch}</td>
+                                                <td class="py-8 border-b border-stone-900/10 text-stone-700">${log.date}</td>
+                                                <td class="py-8 border-b border-stone-900/10 text-stone-900 font-bold">${log.moisture}</td>
+                                                <td class="py-8 border-b border-stone-900/10 text-stone-900 font-bold">${log.contam}</td>
+                                                <td class="py-8 border-b border-stone-900/10 text-stone-900 font-bold text-xl">${log.grade}</td>
+                                                <td class="py-8 border-b border-stone-900/10 text-stone-700 max-w-sm">${log.notes}</td>
                                             </tr>
                                         `).join('')}
                                     </tbody>
@@ -713,42 +715,42 @@
 
         function renderProcessor() {
             const activeTab = state.subViews.processor;
-            const getTabClass = (tab) => activeTab === tab ? 'text-green-800 border-b-2 border-green-800' : 'text-stone-500 border-b-2 border-transparent';
+            const getTabClass = (tab) => activeTab === tab ? 'nav-tab-active' : 'nav-tab-inactive';
 
             return `
-                <div class="space-y-12">
-                    <div class="border-b border-stone-200 pb-8">
-                        <h2 class="text-5xl font-display font-bold text-stone-900 mb-8">Processor Dashboard</h2>
-                        <div class="flex space-x-8 overflow-x-auto w-full">
-                            <button onclick="router.setSubView('processor', 'inventory')" class="pb-3 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('inventory')}">Raw Inventory</button>
-                            <button onclick="router.setSubView('processor', 'products')" class="pb-3 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('products')}">Market Products</button>
-                            <button onclick="router.setSubView('processor', 'ops')" class="pb-3 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('ops')}">Unit Operations</button>
-                            <button onclick="router.setSubView('processor', 'intake')" class="pb-3 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('intake')}">Intake Log</button>
+                <div class="space-y-16">
+                    <div class="border-b-2 border-stone-900/20 pb-8">
+                        <h2 class="text-6xl font-display font-bold text-stone-900 mb-10">Processor Dashboard</h2>
+                        <div class="flex space-x-12 overflow-x-auto w-full">
+                            <button onclick="router.setSubView('processor', 'inventory')" class="pb-4 text-sm uppercase tracking-widest whitespace-nowrap ${getTabClass('inventory')}">Raw Inventory</button>
+                            <button onclick="router.setSubView('processor', 'products')" class="pb-4 text-sm uppercase tracking-widest whitespace-nowrap ${getTabClass('products')}">Market Products</button>
+                            <button onclick="router.setSubView('processor', 'ops')" class="pb-4 text-sm uppercase tracking-widest whitespace-nowrap ${getTabClass('ops')}">Unit Operations</button>
+                            <button onclick="router.setSubView('processor', 'intake')" class="pb-4 text-sm uppercase tracking-widest whitespace-nowrap ${getTabClass('intake')}">Intake Log</button>
                         </div>
                     </div>
 
                     ${activeTab === 'inventory' ? `
                         <div>
-                            <h3 class="text-xs font-bold text-stone-500 uppercase tracking-widest mb-8">Raw Material Stock</h3>
+                            <h3 class="text-xs font-bold text-stone-600 uppercase tracking-widest mb-12">Raw Material Stock</h3>
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left">
-                                    <thead class="border-b-2 border-stone-900 text-stone-900">
+                                    <thead>
                                         <tr>
-                                            <th class="py-4 text-xs font-bold uppercase tracking-widest">Item ID</th>
-                                            <th class="py-4 text-xs font-bold uppercase tracking-widest">Type</th>
-                                            <th class="py-4 text-xs font-bold uppercase tracking-widest">Batch Ref</th>
-                                            <th class="py-4 text-xs font-bold uppercase tracking-widest">Quantity</th>
-                                            <th class="py-4 text-xs font-bold uppercase tracking-widest">Status</th>
+                                            <th class="pb-6 border-b-2 border-stone-900 text-xs font-bold uppercase tracking-widest text-stone-900">Item ID</th>
+                                            <th class="pb-6 border-b-2 border-stone-900 text-xs font-bold uppercase tracking-widest text-stone-900">Type</th>
+                                            <th class="pb-6 border-b-2 border-stone-900 text-xs font-bold uppercase tracking-widest text-stone-900">Batch Ref</th>
+                                            <th class="pb-6 border-b-2 border-stone-900 text-xs font-bold uppercase tracking-widest text-stone-900">Quantity</th>
+                                            <th class="pb-6 border-b-2 border-stone-900 text-xs font-bold uppercase tracking-widest text-stone-900">Status</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-stone-200 text-sm">
+                                    <tbody class="text-base">
                                         ${state.processor.inventoryList.map(item => `
                                             <tr>
-                                                <td class="py-6 font-mono text-stone-500">${item.id}</td>
-                                                <td class="py-6 text-stone-900 font-bold">${item.type}</td>
-                                                <td class="py-6 text-stone-500">${item.batch}</td>
-                                                <td class="py-6 text-green-800 font-bold text-lg">${item.qty} ${item.unit}</td>
-                                                <td class="py-6 text-stone-900 uppercase text-xs font-bold tracking-widest">${item.status}</td>
+                                                <td class="py-8 border-b border-stone-900/10 font-mono text-stone-600">${item.id}</td>
+                                                <td class="py-8 border-b border-stone-900/10 text-stone-900 font-bold text-xl">${item.type}</td>
+                                                <td class="py-8 border-b border-stone-900/10 text-stone-600">${item.batch}</td>
+                                                <td class="py-8 border-b border-stone-900/10 text-stone-900 font-bold text-2xl">${item.qty} ${item.unit}</td>
+                                                <td class="py-8 border-b border-stone-900/10 text-stone-900 uppercase text-sm font-bold tracking-widest">${item.status}</td>
                                             </tr>
                                         `).join('')}
                                     </tbody>
@@ -758,34 +760,34 @@
 
                     ${activeTab === 'products' ? `
                         <div>
-                            <h3 class="text-xs font-bold text-stone-500 uppercase tracking-widest mb-4">Manage Marketplace Products</h3>
-                            <p class="text-sm text-stone-600 mb-10 pb-4 border-b border-stone-200">Update stock levels and product imagery. Changes instantly sync to the Farmer's Market.</p>
-                            <div class="space-y-10">
+                            <h3 class="text-xs font-bold text-stone-600 uppercase tracking-widest mb-4">Manage Marketplace Products</h3>
+                            <p class="text-base text-stone-700 mb-12">Update stock levels and product imagery. Changes instantly sync to the Farmer's Market.</p>
+                            <div class="space-y-12">
                                 ${state.market.map(prod => `
-                                    <div class="pb-10 border-b border-stone-200">
+                                    <div class="pb-12 border-b-2 border-stone-900/10">
                                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
-                                            <div class="flex items-center space-x-6 mb-6 md:mb-0">
-                                                <div class="text-4xl ${prod.iconColor}"><i class="fa-solid ${prod.icon}"></i></div>
+                                            <div class="flex items-center space-x-8 mb-8 md:mb-0">
+                                                <div class="text-5xl text-stone-900 w-16 text-center"><i class="fa-solid ${prod.icon}"></i></div>
                                                 <div>
-                                                    <h4 class="font-bold text-stone-900 text-2xl mb-1">${prod.name}</h4>
-                                                    <p class="text-sm text-stone-500 uppercase tracking-widest">${prod.unit} • Ksh ${formatNum(prod.price)}</p>
+                                                    <h4 class="font-bold text-stone-900 text-3xl mb-2">${prod.name}</h4>
+                                                    <p class="text-sm text-stone-600 uppercase tracking-widest">${prod.unit} • Ksh ${formatNum(prod.price)}</p>
                                                 </div>
                                             </div>
-                                            <div class="flex items-end space-x-6 w-full md:w-auto">
+                                            <div class="flex items-end space-x-8 w-full md:w-auto">
                                                 <div class="text-left md:text-right">
-                                                    <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-2">Stock Level</label>
-                                                    <input type="number" id="stock-edit-${prod.id}" value="${prod.stock}" class="w-24 text-center text-stone-900 font-bold text-xl">
+                                                    <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-2">Stock Level</label>
+                                                    <input type="number" id="stock-edit-${prod.id}" value="${prod.stock}" class="w-32 text-2xl font-bold text-center">
                                                 </div>
-                                                <button onclick="updateProductStock(${prod.id})" class="text-stone-900 font-bold uppercase text-xs tracking-widest border-b border-stone-900 pb-1">Save</button>
+                                                <button onclick="updateProductStock(${prod.id})" class="primary-btn">Save</button>
                                             </div>
                                         </div>
                                         
-                                        <div class="mt-8 flex flex-col md:flex-row justify-between items-start md:items-end">
-                                            <div class="mb-4 md:mb-0 w-full md:w-auto">
-                                                <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-2">Upload Display Image</label>
-                                                <input type="file" accept="image/*" class="text-sm text-stone-600">
+                                        <div class="mt-8 pt-8 flex flex-col md:flex-row justify-between items-start md:items-center">
+                                            <div class="mb-6 md:mb-0 w-full md:w-auto">
+                                                <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-4">Upload Display Image</label>
+                                                <input type="file" accept="image/*" class="text-sm text-stone-900 file:mr-6 file:py-2 file:px-6 file:border-0 file:text-xs file:font-bold file:bg-stone-900 file:text-white file:uppercase file:tracking-widest">
                                             </div>
-                                            <button onclick="showToast('Image uploaded successfully!', 'success')" class="text-stone-500 font-bold uppercase tracking-widest text-xs border-b border-stone-300 pb-1">Upload Image</button>
+                                            <button onclick="showToast('Image uploaded successfully!', 'success')" class="text-stone-900 font-bold uppercase tracking-widest text-sm border-b-2 border-stone-900 pb-1">Upload Image</button>
                                         </div>
                                     </div>
                                 `).join('')}
@@ -794,15 +796,15 @@
 
                     ${activeTab === 'ops' ? `
                         <div>
-                            <h3 class="text-xs font-bold text-stone-500 uppercase tracking-widest mb-12">Unit Operations</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-16">
+                            <h3 class="text-xs font-bold text-stone-600 uppercase tracking-widest mb-16">Unit Operations</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-20">
                                 ${state.processor.units.map(unit => `
                                     <div class="flex flex-col items-center">
-                                        <h4 class="text-stone-900 font-bold text-lg mb-8 text-center">${unit.name}</h4>
-                                        <div class="w-48 mb-8">${generateGauge(unit.progress, unit.color)}</div>
-                                        <div class="text-center border-t border-stone-200 pt-4 w-full">
-                                            <p class="text-stone-500 text-[10px] uppercase tracking-widest mb-2">Est. Completion</p>
-                                            <p class="text-2xl font-bold text-stone-900">${unit.daysLeft} Days</p>
+                                        <h4 class="text-stone-900 font-bold text-2xl mb-10 text-center">${unit.name}</h4>
+                                        <div class="w-full max-w-[250px] mb-10">${generateGauge(unit.progress, '#1c1917')}</div>
+                                        <div class="text-center border-t-2 border-stone-900/10 pt-6 w-full">
+                                            <p class="text-stone-600 text-[10px] uppercase tracking-widest mb-3">Est. Completion</p>
+                                            <p class="text-3xl font-bold text-stone-900">${unit.daysLeft} Days</p>
                                         </div>
                                     </div>
                                 `).join('')}
@@ -810,34 +812,34 @@
                         </div>` : ''}
 
                     ${activeTab === 'intake' ? `
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-24">
                             <div>
-                                <h3 class="text-xs font-bold text-stone-500 uppercase tracking-widest mb-8">Log New Intake Batch</h3>
-                                <form onsubmit="handleIntakeLog(event)" class="space-y-8">
+                                <h3 class="text-xs font-bold text-stone-600 uppercase tracking-widest mb-12">Log New Intake Batch</h3>
+                                <form onsubmit="handleIntakeLog(event)" class="space-y-10">
                                     <div>
-                                        <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-2">Source ID</label>
-                                        <input type="text" id="intakeSource" class="w-full text-lg" required>
+                                        <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-4">Source ID</label>
+                                        <input type="text" id="intakeSource" required>
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-2">Net Weight (kg)</label>
-                                        <input type="number" id="intakeWeight" class="w-full text-lg" required>
+                                        <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-4">Net Weight (kg)</label>
+                                        <input type="number" id="intakeWeight" required>
                                     </div>
-                                    <div class="pt-6">
-                                        <button type="submit" class="bg-stone-900 text-white font-bold py-4 px-8 uppercase tracking-widest text-xs">Confirm Intake</button>
+                                    <div class="pt-8">
+                                        <button type="submit" class="primary-btn w-full">Confirm Intake</button>
                                     </div>
                                 </form>
                             </div>
-                            <div class="pl-0 lg:pl-16 lg:border-l border-stone-200">
-                                <h3 class="text-xs font-bold text-stone-500 uppercase tracking-widest mb-8">Daily Intake History</h3>
-                                <div class="space-y-6">
-                                    ${state.processor.intakeLog.length === 0 ? '<p class="text-stone-500 italic text-sm">No logs today.</p>' : ''}
+                            <div class="pl-0 lg:pl-16 lg:border-l-2 border-stone-900/10">
+                                <h3 class="text-xs font-bold text-stone-600 uppercase tracking-widest mb-12">Daily Intake History</h3>
+                                <div class="space-y-8">
+                                    ${state.processor.intakeLog.length === 0 ? '<p class="text-stone-600 italic text-lg">No logs today.</p>' : ''}
                                     ${state.processor.intakeLog.map(log => `
-                                        <div class="flex justify-between items-center pb-6 border-b border-stone-100">
+                                        <div class="flex justify-between items-center pb-8 border-b-2 border-stone-900/10">
                                             <div>
-                                                <p class="text-stone-900 font-bold text-lg">${log.source}</p>
-                                                <p class="text-xs text-stone-500 mt-2 uppercase tracking-widest">${log.time}</p>
+                                                <p class="text-stone-900 font-bold text-2xl mb-2">${log.source}</p>
+                                                <p class="text-sm text-stone-600 uppercase tracking-widest">${log.time}</p>
                                             </div>
-                                            <p class="text-3xl font-display font-bold text-green-800">${log.weight}<span class="text-lg text-stone-400">kg</span></p>
+                                            <p class="text-4xl font-display font-bold text-stone-900">${log.weight}<span class="text-xl text-stone-500">kg</span></p>
                                         </div>
                                     `).join('')}
                                 </div>
@@ -849,24 +851,24 @@
 
         function renderAcademy() {
             return `
-                <div class="pt-8">
-                    <div class="mb-16 max-w-3xl">
-                        <h3 class="text-5xl font-display font-bold text-stone-900 mb-6">W2W Training Academy</h3>
-                        <p class="text-stone-600 text-lg leading-relaxed">Upgrade your skills. Book a professional training session and learn best practices in circular waste management and advanced agricultural techniques.</p>
+                <div>
+                    <div class="mb-20 max-w-4xl">
+                        <h3 class="text-6xl font-display font-bold text-stone-900 mb-8">W2W Training Academy</h3>
+                        <p class="text-stone-700 text-2xl leading-relaxed">Upgrade your skills. Book a professional training session and learn best practices in circular waste management and advanced agricultural techniques.</p>
                     </div>
-                    <div class="space-y-12">
+                    <div class="space-y-16">
                         ${state.academy.map(course => `
-                            <div class="pb-12 border-b border-stone-200 flex flex-col md:flex-row justify-between md:items-start">
-                                <div class="flex space-x-8 items-start">
-                                    <div class="text-brown-700 text-4xl w-12 text-center mt-1"><i class="fa-solid ${course.icon}"></i></div>
+                            <div class="pb-16 border-b-2 border-stone-900/20 flex flex-col md:flex-row justify-between md:items-start">
+                                <div class="flex space-x-10 items-start">
+                                    <div class="text-stone-900 text-5xl w-16 text-center mt-2"><i class="fa-solid ${course.icon}"></i></div>
                                     <div>
-                                        <h4 class="text-stone-900 font-bold text-3xl mb-4">${course.title}</h4>
-                                        <p class="text-stone-500 text-xs font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-3"></i>${course.date}</p>
+                                        <h4 class="text-stone-900 font-bold text-4xl mb-4 leading-tight">${course.title}</h4>
+                                        <p class="text-stone-600 text-sm font-bold uppercase tracking-widest"><i class="fa-regular fa-calendar mr-4"></i>${course.date}</p>
                                     </div>
                                 </div>
-                                <div class="mt-8 md:mt-0 flex flex-col items-start md:items-end">
-                                    <span class="text-3xl font-bold text-stone-900 mb-6">Ksh ${formatNum(course.fee)}</span>
-                                    <button onclick="bookTraining(${course.id})" class="text-brown-700 font-bold uppercase tracking-widest text-xs border-b border-brown-700 pb-1">Book Now</button>
+                                <div class="mt-10 md:mt-0 flex flex-col items-start md:items-end">
+                                    <span class="text-4xl font-bold text-stone-900 mb-8">Ksh ${formatNum(course.fee)}</span>
+                                    <button onclick="bookTraining(${course.id})" class="primary-btn">Book Now</button>
                                 </div>
                             </div>
                         `).join('')}
@@ -877,48 +879,48 @@
 
         function renderFarmer() {
             const activeTab = state.subViews.farmer;
-            const getTabClass = (tab) => activeTab === tab ? 'text-green-800 border-b-2 border-green-800' : 'text-stone-500 border-b-2 border-transparent';
+            const getTabClass = (tab) => activeTab === tab ? 'nav-tab-active' : 'nav-tab-inactive';
             const cartCount = state.cart.reduce((sum, item) => sum + item.qty, 0);
             const subtotal = state.cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
             const total = subtotal + state.deliveryFee;
 
             return `
-                <div class="space-y-12">
-                    <div class="border-b border-stone-200 pb-8 flex flex-col md:flex-row justify-between items-end">
+                <div class="space-y-16">
+                    <div class="border-b-2 border-stone-900/20 pb-8 flex flex-col md:flex-row justify-between items-end">
                         <div class="w-full">
-                            <h2 class="text-5xl font-display font-bold text-stone-900 mb-8">Farmer Dashboard</h2>
-                            <div class="flex space-x-8 overflow-x-auto w-full">
-                                <button onclick="router.setSubView('farmer', 'market')" class="pb-3 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('market')}">Marketplace</button>
-                                <button onclick="router.setSubView('farmer', 'orders')" class="pb-3 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('orders')}">Orders & Tracking</button>
-                                <button onclick="router.setSubView('farmer', 'academy')" class="pb-3 text-sm font-bold uppercase tracking-widest whitespace-nowrap ${getTabClass('academy')}">Academy</button>
+                            <h2 class="text-6xl font-display font-bold text-stone-900 mb-10">Farmer Dashboard</h2>
+                            <div class="flex space-x-12 overflow-x-auto w-full">
+                                <button onclick="router.setSubView('farmer', 'market')" class="pb-4 text-sm uppercase tracking-widest whitespace-nowrap ${getTabClass('market')}">Marketplace</button>
+                                <button onclick="router.setSubView('farmer', 'orders')" class="pb-4 text-sm uppercase tracking-widest whitespace-nowrap ${getTabClass('orders')}">Orders & Tracking</button>
+                                <button onclick="router.setSubView('farmer', 'academy')" class="pb-4 text-sm uppercase tracking-widest whitespace-nowrap ${getTabClass('academy')}">Academy</button>
                             </div>
                         </div>
-                        <button onclick="router.setSubView('farmer', 'cart')" class="mt-6 md:mt-0 pb-3 flex items-center text-stone-900 border-b-2 border-transparent">
-                            <i class="fa-solid fa-cart-shopping mr-3 text-xl text-green-800"></i>
-                            <span class="font-bold text-sm uppercase tracking-widest">Cart (${cartCount})</span>
+                        <button onclick="router.setSubView('farmer', 'cart')" class="mt-8 md:mt-0 pb-4 flex items-center text-stone-900 border-b-2 border-transparent">
+                            <i class="fa-solid fa-cart-shopping mr-4 text-2xl"></i>
+                            <span class="font-bold text-base uppercase tracking-widest">Cart (${cartCount})</span>
                         </button>
                     </div>
 
                     ${activeTab === 'market' ? `
                         <div>
-                            <h3 class="text-xs font-bold text-stone-500 uppercase tracking-widest mb-10">Agricultural Marketplace</h3>
-                            <div class="space-y-16">
+                            <h3 class="text-xs font-bold text-stone-600 uppercase tracking-widest mb-12">Agricultural Marketplace</h3>
+                            <div class="space-y-20">
                                 ${state.market.map(product => `
-                                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-12 border-b border-stone-200">
-                                        <div class="flex space-x-8 items-center mb-8 md:mb-0">
-                                            <div class="text-5xl ${product.iconColor} w-20 text-center"><i class="fa-solid ${product.icon}"></i></div>
+                                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center pb-16 border-b-2 border-stone-900/10">
+                                        <div class="flex space-x-10 items-center mb-10 md:mb-0">
+                                            <div class="text-6xl text-stone-900 w-24 text-center"><i class="fa-solid ${product.icon}"></i></div>
                                             <div>
-                                                <h3 class="text-stone-900 font-bold text-3xl mb-3">${product.name}</h3>
-                                                <p class="text-stone-500 text-xs uppercase tracking-widest font-bold mb-4">${product.unit} <span class="mx-3 text-stone-300">|</span> <span class="text-green-800">Stock: ${product.stock}</span></p>
-                                                <span class="text-2xl font-bold text-stone-900">Ksh ${formatNum(product.price)}</span>
+                                                <h3 class="text-stone-900 font-bold text-4xl mb-4">${product.name}</h3>
+                                                <p class="text-stone-600 text-sm uppercase tracking-widest font-bold mb-6">${product.unit} <span class="mx-4 text-stone-400">|</span> <span class="text-stone-900">Stock: ${product.stock}</span></p>
+                                                <span class="text-3xl font-bold text-stone-900">Ksh ${formatNum(product.price)}</span>
                                             </div>
                                         </div>
-                                        <div class="flex items-end space-x-8">
+                                        <div class="flex items-end space-x-10">
                                             <div>
-                                                <label class="block text-[10px] text-stone-500 uppercase font-bold tracking-widest mb-2">Qty</label>
-                                                <input type="number" id="qty-${product.id}" value="1" min="1" max="${product.stock}" class="w-16 text-center text-xl font-bold">
+                                                <label class="block text-[10px] text-stone-600 uppercase font-bold tracking-widest mb-2">Qty</label>
+                                                <input type="number" id="qty-${product.id}" value="1" min="1" max="${product.stock}" class="w-24 text-center text-2xl font-bold">
                                             </div>
-                                            <button onclick="addToCart(${product.id})" ${product.stock === 0 ? 'disabled' : ''} class="text-stone-900 font-bold text-xs uppercase tracking-widest border-b border-stone-900 pb-1 disabled:text-stone-400 disabled:border-stone-400">
+                                            <button onclick="addToCart(${product.id})" ${product.stock === 0 ? 'disabled' : ''} class="primary-btn">
                                                 ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
                                             </button>
                                         </div>
@@ -928,19 +930,19 @@
                         </div>` : ''}
 
                     ${activeTab === 'cart' ? `
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-                            <div class="space-y-12">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-24">
+                            <div class="space-y-16">
                                 <div>
-                                    <h3 class="text-xs font-bold text-stone-500 uppercase tracking-widest mb-8">Your Shopping Cart</h3>
-                                    ${state.cart.length === 0 ? `<p class="text-stone-500 italic">Your cart is empty.</p>` : `
-                                        <div class="space-y-8">
+                                    <h3 class="text-xs font-bold text-stone-600 uppercase tracking-widest mb-10">Your Shopping Cart</h3>
+                                    ${state.cart.length === 0 ? `<p class="text-stone-600 text-xl italic">Your cart is empty.</p>` : `
+                                        <div class="space-y-10">
                                             ${state.cart.map(item => `
-                                                <div class="flex justify-between items-center pb-6 border-b border-stone-200">
+                                                <div class="flex justify-between items-center pb-8 border-b-2 border-stone-900/10">
                                                     <div>
-                                                        <h4 class="text-stone-900 font-bold text-xl mb-1">${item.name}</h4>
-                                                        <p class="text-stone-500 text-sm">${item.qty} x Ksh ${formatNum(item.price)}</p>
+                                                        <h4 class="text-stone-900 font-bold text-2xl mb-2">${item.name}</h4>
+                                                        <p class="text-stone-600 text-lg">${item.qty} x Ksh ${formatNum(item.price)}</p>
                                                     </div>
-                                                    <p class="text-stone-900 font-bold text-2xl">Ksh ${formatNum(item.qty * item.price)}</p>
+                                                    <p class="text-stone-900 font-bold text-3xl">Ksh ${formatNum(item.qty * item.price)}</p>
                                                 </div>
                                             `).join('')}
                                         </div>
@@ -948,34 +950,34 @@
                                 </div>
                                 
                                 ${state.cart.length > 0 ? `
-                                    <div class="pt-8 border-t border-stone-200">
-                                        <h3 class="text-xs font-bold text-stone-500 uppercase tracking-widest mb-8">Shipping Details</h3>
-                                        <form id="checkoutForm" class="space-y-8">
-                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div class="pt-10 border-t-2 border-stone-900/20">
+                                        <h3 class="text-xs font-bold text-stone-600 uppercase tracking-widest mb-10">Shipping Details</h3>
+                                        <form id="checkoutForm" class="space-y-10">
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                                                 <div>
-                                                    <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-2">Full Name</label>
+                                                    <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-4">Full Name</label>
                                                     <input type="text" id="checkoutName" required>
                                                 </div>
                                                 <div>
-                                                    <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-2">Phone Number</label>
+                                                    <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-4">Phone Number</label>
                                                     <input type="text" id="checkoutPhone" required>
                                                 </div>
                                             </div>
-                                            <div class="pt-4">
-                                                <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-6">Delivery Method</label>
-                                                <div class="flex flex-col space-y-6">
-                                                    <label class="flex items-center space-x-4 cursor-pointer">
-                                                        <input type="radio" name="deliveryType" value="pickup" checked onchange="updateDeliveryFee()">
-                                                        <span class="text-stone-900 text-lg">Pick-up Point (Free)</span>
+                                            <div class="pt-6 border-t border-stone-900/10">
+                                                <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-8">Delivery Method</label>
+                                                <div class="flex flex-col space-y-8">
+                                                    <label class="flex items-center space-x-6 cursor-pointer">
+                                                        <input type="radio" name="deliveryType" value="pickup" checked onchange="updateDeliveryFee()" class="w-6 h-6 border-stone-900">
+                                                        <span class="text-stone-900 text-xl font-bold">Pick-up Point (Free)</span>
                                                     </label>
-                                                    <label class="flex items-center space-x-4 cursor-pointer">
-                                                        <input type="radio" name="deliveryType" value="door" onchange="updateDeliveryFee()">
-                                                        <span class="text-stone-900 text-lg">Door Delivery (+Ksh 1,000)</span>
+                                                    <label class="flex items-center space-x-6 cursor-pointer">
+                                                        <input type="radio" name="deliveryType" value="door" onchange="updateDeliveryFee()" class="w-6 h-6 border-stone-900">
+                                                        <span class="text-stone-900 text-xl font-bold">Door Delivery (+Ksh 1,000)</span>
                                                     </label>
                                                 </div>
                                             </div>
-                                            <div id="locationField" class="pt-4">
-                                                <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-2">Delivery Location / Pick-up Station</label>
+                                            <div id="locationField" class="pt-6 border-t border-stone-900/10">
+                                                <label class="block text-[10px] font-bold text-stone-600 uppercase tracking-widest mb-4">Delivery Location / Pick-up Station</label>
                                                 <input type="text" id="checkoutLocation">
                                             </div>
                                         </form>
@@ -983,48 +985,48 @@
                                 ` : ''}
                             </div>
 
-                            <div class="pl-0 lg:pl-16 lg:border-l border-stone-200">
-                                <h3 class="text-xs font-bold text-stone-500 uppercase tracking-widest mb-8">Order Summary</h3>
-                                <div class="space-y-6 text-lg mb-10">
-                                    <div class="flex justify-between text-stone-600"><span>Subtotal</span><span>Ksh ${formatNum(subtotal)}</span></div>
-                                    <div class="flex justify-between text-stone-600"><span>Delivery Fee</span><span>Ksh ${formatNum(state.deliveryFee)}</span></div>
-                                    <div class="flex justify-between text-stone-900 font-bold text-3xl pt-8 border-t border-stone-200 mt-8">
-                                        <span>Total</span><span class="text-green-800">Ksh ${formatNum(total)}</span>
+                            <div class="pl-0 lg:pl-20 lg:border-l-2 border-stone-900/20">
+                                <h3 class="text-xs font-bold text-stone-600 uppercase tracking-widest mb-10">Order Summary</h3>
+                                <div class="space-y-8 text-xl mb-16">
+                                    <div class="flex justify-between text-stone-700"><span>Subtotal</span><span>Ksh ${formatNum(subtotal)}</span></div>
+                                    <div class="flex justify-between text-stone-700"><span>Delivery Fee</span><span>Ksh ${formatNum(state.deliveryFee)}</span></div>
+                                    <div class="flex justify-between text-stone-900 font-bold text-4xl pt-10 border-t-2 border-stone-900/20 mt-10">
+                                        <span>Total</span><span>Ksh ${formatNum(total)}</span>
                                     </div>
                                 </div>
                                 <div class="space-y-8">
-                                    <button onclick="checkout(event)" class="bg-stone-900 text-white w-full py-5 font-bold uppercase tracking-widest text-sm">Pay & Checkout</button>
-                                    <button onclick="router.setSubView('farmer', 'market')" class="w-full text-stone-500 font-bold uppercase tracking-widest text-xs text-center">Continue Shopping</button>
+                                    <button onclick="checkout(event)" class="primary-btn w-full py-6 text-base">Pay & Checkout</button>
+                                    <button onclick="router.setSubView('farmer', 'market')" class="w-full text-stone-600 font-bold uppercase tracking-widest text-sm text-center py-4 border border-stone-900/20">Continue Shopping</button>
                                 </div>
                             </div>
                         </div>` : ''}
 
                     ${activeTab === 'orders' ? `
                         <div>
-                            <h3 class="text-xs font-bold text-stone-500 uppercase tracking-widest mb-10">Your Orders & Deliveries</h3>
-                            <div class="space-y-16">
+                            <h3 class="text-xs font-bold text-stone-600 uppercase tracking-widest mb-12">Your Orders & Deliveries</h3>
+                            <div class="space-y-20">
                                 ${state.farmer.orders.map(o => `
-                                    <div class="pb-12 border-b border-stone-200">
-                                        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10">
+                                    <div class="pb-16 border-b-2 border-stone-900/20">
+                                        <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
                                             <div>
-                                                <h4 class="text-stone-900 font-bold text-3xl mb-3">${o.name}</h4>
-                                                <p class="text-xs text-stone-500 uppercase tracking-widest">ID: <span class="font-bold text-stone-800">${o.id}</span> <span class="mx-3 text-stone-300">|</span> Placed: ${o.date}</p>
+                                                <h4 class="text-stone-900 font-bold text-4xl mb-4">${o.name}</h4>
+                                                <p class="text-sm text-stone-600 uppercase tracking-widest">ID: <span class="font-bold text-stone-900">${o.id}</span> <span class="mx-4 text-stone-300">|</span> Placed: ${o.date}</p>
                                             </div>
-                                            <div class="mt-6 md:mt-0 text-left md:text-right">
-                                                <p class="text-stone-900 font-bold text-2xl">Ksh ${formatNum(o.total || 0)}</p>
-                                                <p class="text-stone-500 text-sm mt-2">Qty: ${o.qty || 1}</p>
+                                            <div class="mt-8 md:mt-0 text-left md:text-right">
+                                                <p class="text-stone-900 font-bold text-3xl mb-2">Ksh ${formatNum(o.total || 0)}</p>
+                                                <p class="text-stone-600 text-lg">Qty: ${o.qty || 1}</p>
                                             </div>
                                         </div>
                                         
                                         ${getTrackingUI(o)}
                                         
-                                        <div class="mt-10 pt-8 border-t border-stone-200 flex flex-col md:flex-row justify-between items-start md:items-center">
-                                            <p class="text-xs font-bold text-stone-500 uppercase tracking-widest mb-4 md:mb-0">Status: <span class="text-stone-900 text-sm ml-3">${o.status}</span></p>
-                                            ${o.status !== 'Delivered' ? `<p class="text-xs text-stone-500 uppercase tracking-widest">Est. Delivery: <span class="font-bold text-stone-900 ml-3 text-sm">${o.estDelivery}</span></p>` : `<p class="text-xs text-green-800 font-bold uppercase tracking-widest"><i class="fa-solid fa-check mr-2"></i>Order Complete</p>`}
+                                        <div class="mt-16 pt-10 border-t-2 border-stone-900/10 flex flex-col md:flex-row justify-between items-start md:items-center">
+                                            <p class="text-sm font-bold text-stone-600 uppercase tracking-widest mb-4 md:mb-0">Status: <span class="text-stone-900 text-base ml-4">${o.status}</span></p>
+                                            ${o.status !== 'Delivered' ? `<p class="text-sm text-stone-600 uppercase tracking-widest">Est. Delivery: <span class="font-bold text-stone-900 ml-4 text-base">${o.estDelivery}</span></p>` : `<p class="text-sm text-stone-900 font-bold uppercase tracking-widest"><i class="fa-solid fa-check mr-3"></i>Order Complete</p>`}
                                         </div>
                                     </div>
                                 `).join('')}
-                                ${state.farmer.orders.length === 0 ? '<p class="text-stone-500 italic">No orders yet.</p>' : ''}
+                                ${state.farmer.orders.length === 0 ? '<p class="text-stone-600 text-xl italic">No orders yet.</p>' : ''}
                             </div>
                         </div>` : ''}
 
@@ -1035,6 +1037,25 @@
 
         function render() {
             const root = document.getElementById('app-root');
+            const body = document.body;
+            const nav = document.getElementById('main-nav');
+            const menu = document.getElementById('mobile-menu');
+            
+            // Clean specific bg classes dynamically
+            let bgColor = '#ffffff';
+
+            switch(state.currentView) {
+                case 'landing': bgColor = '#e8f5e9'; break; // Light Green
+                case 'admin': bgColor = '#fffde7'; break; // Creamy Yellow White
+                case 'producer': bgColor = '#d7ccc8'; break; // Cool Brown
+                case 'farmer': bgColor = '#c8e6c9'; break; // Modern Green
+                case 'processor': bgColor = '#d7ccc8'; break; // Cool Brown
+            }
+
+            body.style.backgroundColor = bgColor;
+            nav.style.backgroundColor = bgColor;
+            menu.style.backgroundColor = bgColor;
+
             root.innerHTML = ''; 
             switch(state.currentView) {
                 case 'landing': root.innerHTML = renderLanding(); initTypewriter(); break;
